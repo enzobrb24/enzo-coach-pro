@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enzo Coach Pro — Programmes Personnalisés</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bordeaux: #6B1B2E;
+  --bordeaux-light: #8B2A3F;
+  --bordeaux-dark: #4A1120;
+  --bordeaux-pale: #F5E8EC;
+  --bordeaux-mid: #C4596E;
+  --cream: #FAF7F4;
+  --dark: #1A0A0F;
+  --gray: #8A7F82;
+  --gray-light: #E8E2E4;
+  --green: #2D6A4F;
+  --green-light: #D8F3DC;
+  --blue: #1A4A7A;
+  --blue-light: #E3EEF9;
+  --amber: #8B5E00;
+  --amber-light: #FFF3CD;
+  --trail: #5C4A1E;
+  --trail-light: #F5EDD6;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--dark); min-height:100vh; }
+
+/* HEADER */
+header { background:var(--bordeaux-dark); color:white; position:sticky; top:0; z-index:100; box-shadow:0 2px 20px rgba(74,17,32,0.4); }
+.header-inner { max-width:1100px; margin:0 auto; padding:0 2rem; display:flex; align-items:center; justify-content:space-between; height:64px; gap:1rem; }
+.logo { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:0.05em; color:white; display:flex; align-items:center; gap:10px; flex-shrink:0; }
+.logo-dot { color:var(--bordeaux-mid); }
+.logo-icon { width:36px; height:36px; background:var(--bordeaux); border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+/* PROGRAM SELECTOR */
+.prog-selector { display:flex; gap:6px; overflow-x:auto; padding:4px 0; }
+.prog-selector::-webkit-scrollbar { display:none; }
+.prog-btn { background:transparent; border:1.5px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.65); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500; padding:6px 14px; border-radius:20px; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+.prog-btn:hover { color:white; border-color:rgba(255,255,255,0.5); }
+.prog-btn.active { color:white; background:var(--bordeaux); border-color:var(--bordeaux); }
+
+/* HERO */
+.hero { color:white; padding:2.5rem 2rem 3.5rem; position:relative; overflow:hidden; transition:background 0.3s; }
+.hero-inner { max-width:1100px; margin:0 auto; }
+.hero-tag { display:inline-block; background:rgba(255,255,255,0.15); color:white; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; padding:5px 14px; border-radius:20px; margin-bottom:1.25rem; }
+.hero h1 { font-family:'Bebas Neue',sans-serif; font-size:clamp(38px,6vw,72px); letter-spacing:0.03em; line-height:0.95; margin-bottom:1rem; }
+.hero h1 span { color:var(--bordeaux-mid); }
+.hero-sub { font-size:14px; color:rgba(255,255,255,0.65); max-width:520px; line-height:1.7; margin-bottom:2rem; }
+.hero-stats { display:flex; gap:1.75rem; flex-wrap:wrap; }
+.hero-stat { display:flex; flex-direction:column; }
+.hero-stat-val { font-family:'Bebas Neue',sans-serif; font-size:32px; color:white; line-height:1; }
+.hero-stat-lbl { font-size:11px; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.1em; margin-top:2px; }
+.hero-divider { width:1px; height:36px; background:rgba(255,255,255,0.15); align-self:center; }
+.hero-watermark { position:absolute; right:-10px; top:50%; transform:translateY(-50%); font-family:'Bebas Neue',sans-serif; font-size:160px; color:rgba(255,255,255,0.04); letter-spacing:-5px; pointer-events:none; }
+
+/* MAIN NAV */
+.main-nav { background:white; border-bottom:1px solid var(--gray-light); position:sticky; top:64px; z-index:90; }
+.main-nav-inner { max-width:1100px; margin:0 auto; padding:0 2rem; display:flex; gap:0; }
+.tab-btn { background:transparent; border:none; border-bottom:2px solid transparent; color:var(--gray); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; padding:14px 18px; cursor:pointer; transition:all 0.2s; }
+.tab-btn:hover { color:var(--dark); }
+.tab-btn.active { color:var(--bordeaux); border-bottom-color:var(--bordeaux); }
+
+/* MAIN */
+main { max-width:1100px; margin:0 auto; padding:2rem; }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* WEEKS */
+.phase-label { font-family:'Bebas Neue',sans-serif; font-size:20px; letter-spacing:0.05em; color:var(--bordeaux); padding:1.5rem 0 0.5rem; border-bottom:2px solid var(--bordeaux-pale); margin-bottom:10px; display:flex; align-items:baseline; gap:12px; }
+.phase-label span { font-family:'DM Sans',sans-serif; font-size:12px; font-weight:400; color:var(--gray); letter-spacing:0; }
+.weeks-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-bottom:1rem; }
+.week-card { background:white; border:1.5px solid var(--gray-light); border-radius:14px; padding:1.15rem; cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden; }
+.week-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:var(--gray-light); transition:background 0.2s; }
+.week-card:hover { border-color:var(--bordeaux-mid); transform:translateY(-2px); box-shadow:0 8px 24px rgba(107,27,46,0.1); }
+.week-card:hover::before, .week-card.selected::before { background:var(--bordeaux); }
+.week-card.selected { border-color:var(--bordeaux); }
+.week-card.recovery-week { border-color:#B7DFC8; }
+.week-card.recovery-week::before { background:var(--green); }
+.week-num { font-family:'Bebas Neue',sans-serif; font-size:12px; letter-spacing:0.1em; color:var(--gray); margin-bottom:3px; }
+.week-title-card { font-size:13px; font-weight:500; color:var(--dark); margin-bottom:8px; line-height:1.3; }
+.week-sessions { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:8px; }
+.session-dot { width:26px; height:26px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:12px; }
+.dot-run { background:var(--bordeaux-pale); }
+.dot-strength { background:var(--green-light); }
+.dot-interval { background:var(--amber-light); }
+.dot-long { background:var(--blue-light); }
+.dot-trail { background:var(--trail-light); }
+.dot-rest { background:var(--gray-light); }
+.week-volume { font-family:'DM Mono',monospace; font-size:12px; color:var(--bordeaux); font-weight:500; }
+.recovery-badge { display:inline-block; background:var(--green-light); color:var(--green); font-size:10px; font-weight:500; padding:2px 8px; border-radius:10px; margin-top:5px; }
+
+/* DETAIL */
+.detail-panel { display:none; background:white; border:1.5px solid var(--gray-light); border-radius:16px; padding:1.75rem; margin-bottom:1.5rem; animation:slideIn 0.2s ease; }
+.detail-panel.visible { display:block; }
+@keyframes slideIn { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:translateY(0); } }
+.detail-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:1.25rem; padding-bottom:1.25rem; border-bottom:1px solid var(--gray-light); }
+.detail-week-num { font-family:'Bebas Neue',sans-serif; font-size:12px; letter-spacing:0.1em; color:var(--gray); margin-bottom:3px; }
+.detail-title { font-family:'Bebas Neue',sans-serif; font-size:26px; letter-spacing:0.03em; color:var(--bordeaux-dark); }
+.detail-close { background:var(--gray-light); border:none; width:30px; height:30px; border-radius:50%; font-size:14px; cursor:pointer; color:var(--gray); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.detail-close:hover { background:var(--bordeaux-pale); color:var(--bordeaux); }
+.sessions-list { display:flex; flex-direction:column; gap:10px; }
+.session-card { border:1px solid var(--gray-light); border-radius:12px; overflow:hidden; }
+.session-header { display:flex; align-items:center; gap:10px; padding:0.75rem 1rem; border-bottom:1px solid var(--gray-light); flex-wrap:wrap; }
+.session-type-badge { font-size:11px; font-weight:500; padding:3px 10px; border-radius:20px; white-space:nowrap; }
+.type-run { background:var(--bordeaux-pale); color:var(--bordeaux-dark); }
+.type-long { background:var(--blue-light); color:var(--blue); }
+.type-interval { background:var(--amber-light); color:var(--amber); }
+.type-strength { background:var(--green-light); color:var(--green); }
+.type-trail { background:var(--trail-light); color:var(--trail); }
+.type-rest { background:var(--gray-light); color:var(--gray); }
+.session-day { font-size:12px; font-weight:500; color:var(--dark); }
+.session-name { font-size:13px; font-weight:500; flex:1; }
+.session-duration { font-family:'DM Mono',monospace; font-size:12px; color:var(--gray); margin-left:auto; }
+.session-body { padding:0.85rem 1rem; }
+.session-desc { font-size:13px; color:var(--gray); line-height:1.7; margin-bottom:8px; }
+.session-details { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+.session-detail-tag { background:var(--cream); border:1px solid var(--gray-light); border-radius:6px; padding:2px 9px; font-size:11px; color:var(--dark); }
+.strength-block { background:var(--green-light); border-radius:10px; padding:0.85rem; margin-top:6px; }
+.strength-block-title { font-size:12px; font-weight:500; color:var(--green); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px; }
+.exercises-grid { display:grid; grid-template-columns:1fr 1fr; gap:5px; }
+.exercise-item { background:white; border-radius:7px; padding:7px 9px; font-size:12px; color:var(--dark); }
+.exercise-name { font-weight:500; display:block; }
+.exercise-sets { color:var(--green); font-size:11px; display:block; }
+
+/* STATS */
+.stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:1.5rem; }
+.stat-big { background:white; border:1.5px solid var(--gray-light); border-radius:14px; padding:1.25rem; }
+.stat-big-val { font-family:'Bebas Neue',sans-serif; font-size:40px; color:var(--bordeaux); line-height:1; }
+.stat-big-unit { font-size:14px; color:var(--bordeaux-mid); }
+.stat-big-lbl { font-size:12px; color:var(--gray); margin-top:4px; }
+.progression-chart { background:white; border:1.5px solid var(--gray-light); border-radius:14px; padding:1.25rem; margin-bottom:1.25rem; }
+.chart-title { font-size:13px; font-weight:500; margin-bottom:1rem; }
+.chart-bars { display:flex; align-items:flex-end; gap:5px; height:110px; }
+.chart-bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; height:100%; justify-content:flex-end; }
+.chart-bar { width:100%; border-radius:4px 4px 0 0; background:var(--bordeaux-pale); border:1px solid var(--bordeaux-mid); min-height:4px; }
+.chart-bar.recovery { background:var(--green-light); border-color:#97C459; }
+.chart-bar-lbl { font-size:9px; color:var(--gray); font-family:'DM Mono',monospace; }
+.chart-bar-km { font-size:9px; color:var(--bordeaux); font-family:'DM Mono',monospace; }
+
+/* TIPS */
+.tip-card { background:white; border:1.5px solid var(--gray-light); border-radius:14px; padding:1.1rem 1.35rem; margin-bottom:10px; display:flex; gap:12px; align-items:flex-start; }
+.tip-icon { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.tip-title { font-size:13px; font-weight:500; margin-bottom:3px; }
+.tip-text { font-size:13px; color:var(--gray); line-height:1.7; }
+
+/* PROFIL */
+.profil-card { background:var(--bordeaux-dark); color:white; border-radius:16px; padding:1.75rem; margin-bottom:1.25rem; display:grid; grid-template-columns:1fr 1fr; gap:1.25rem; }
+.profil-field { display:flex; flex-direction:column; gap:3px; }
+.profil-label { font-size:11px; color:rgba(255,255,255,0.5); text-transform:uppercase; letter-spacing:0.1em; }
+.profil-value { font-size:15px; font-weight:500; }
+
+.section-intro { font-size:13px; color:var(--gray); margin-bottom:1.25rem; line-height:1.7; }
+
+@media (max-width:600px) {
+  .weeks-grid { grid-template-columns:1fr 1fr; }
+  .exercises-grid { grid-template-columns:1fr; }
+  .profil-card { grid-template-columns:1fr; }
+  .hero-watermark { display:none; }
+  .header-inner { padding:0 1rem; }
+  main { padding:1rem; }
+  .prog-btn { font-size:11px; padding:5px 10px; }
+}
+
+.nutri-section{margin-bottom:2rem}
+.nutri-section-title{font-family:"Bebas Neue",sans-serif;font-size:20px;letter-spacing:.05em;color:var(--bordeaux);padding:1rem 0 .75rem;border-bottom:2px solid var(--bordeaux-pale);margin-bottom:1rem}
+.nutri-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.nutri-card{background:white;border:1.5px solid var(--gray-light);border-radius:14px;overflow:hidden}
+.nutri-card-header{padding:.85rem 1rem;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--gray-light)}
+.nutri-card-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;background:var(--blue-light)}
+.nutri-card-title{font-size:13px;font-weight:500;flex:1}
+.nutri-card-badge{font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px;background:#E3EEF9;color:var(--blue);white-space:nowrap}
+.nutri-card-body{padding:.85rem 1rem}
+.nutri-card-desc{font-size:13px;color:var(--gray);line-height:1.7;margin-bottom:8px}
+.nutri-tags{display:flex;flex-wrap:wrap;gap:5px}
+.nutri-tag{background:var(--cream);border:1px solid var(--gray-light);border-radius:6px;padding:2px 9px;font-size:11px;color:var(--dark)}
+.nutri-timeline{display:flex;flex-direction:column}
+.nutri-timeline-item{display:flex;gap:14px;padding:.85rem 0;border-bottom:1px solid var(--gray-light)}
+.nutri-timeline-item:last-child{border-bottom:none}
+.nutri-timeline-time{font-family:"DM Mono",monospace;font-size:11px;color:var(--bordeaux);font-weight:500;min-width:75px;padding-top:2px;flex-shrink:0}
+.nutri-timeline-title{font-size:13px;font-weight:500;margin-bottom:3px}
+.nutri-timeline-desc{font-size:12px;color:var(--gray);line-height:1.6}
+.nutri-alert{background:var(--bordeaux-pale);border-left:3px solid var(--bordeaux);border-radius:0 10px 10px 0;padding:.85rem 1rem;margin-bottom:1.5rem;font-size:13px;color:var(--bordeaux-dark);line-height:1.6}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg style="width:20px;height:20px;" viewBox="0 0 24 24"><polygon points="13,2 4,14 11,14 11,22 20,10 13,10" fill="white"/></svg>
+      </div>
+      ENZO<span class="logo-dot">·</span>COACH PRO
+    </div>
+    <div class="prog-selector" id="prog-selector">
+      <button class="prog-btn active" onclick="switchProg('marathon',this)">🏁 Marathon Route</button>
+      <button class="prog-btn" onclick="switchProg('marathon_trail',this)">⛰️ Marathon Trail</button>
+      <button class="prog-btn" onclick="switchProg('semi',this)">🏔️ 21km Trail</button>
+      <button class="prog-btn" onclick="switchProg('10k',this)">⚡ 10km</button>
+    </div>
+  </div>
+</header>
+
+<!-- HERO dynamique -->
+<div class="hero" id="hero" style="background:var(--bordeaux-dark);">
+  <div class="hero-watermark" id="hero-watermark">42.195</div>
+  <div class="hero-inner">
+    <div class="hero-tag" id="hero-tag">Programme Personnalisé · 12 Semaines · Enzo Coach Pro</div>
+    <h1 id="hero-title">MARATHON<br><span>SUB 4H00</span></h1>
+    <p class="hero-sub" id="hero-sub">Programme adapté à votre niveau avancé, basé sur votre chrono de 4h26 et votre allure actuelle de 6:30/km.</p>
+    <div class="hero-stats" id="hero-stats"></div>
+  </div>
+</div>
+
+<div class="main-nav">
+  <div class="main-nav-inner">
+    <button class="tab-btn active" onclick="showTab('programme',this)">Programme</button>
+    <button class="tab-btn" onclick="showTab('stats',this)">Progression</button>
+    <button class="tab-btn" onclick="showTab('conseils',this)">Conseils</button>
+    <button class="tab-btn" onclick="showTab('profil',this)">Profil</button>
+    <button class="tab-btn" onclick="showTab('nutrition',this)">Nutrition &#127829;</button>
+  </div>
+</div>
+
+<main>
+  <div class="tab-content active" id="tab-programme">
+    <p class="section-intro" id="prog-intro">Cliquez sur une semaine pour voir le détail des séances.</p>
+    <div id="detail-panel" class="detail-panel"></div>
+    <div class="weeks-grid" id="weeks-grid"></div>
+  </div>
+
+  <div class="tab-content" id="tab-stats">
+    <div class="stats-grid" id="stats-grid"></div>
+    <div class="progression-chart">
+      <div class="chart-title">Volume hebdomadaire (km)</div>
+      <div class="chart-bars" id="volume-chart"></div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-conseils">
+    <div id="conseils-content"></div>
+  </div>
+
+  <div class="tab-content" id="tab-nutrition">
+    <div id="nutrition-content"></div>
+  </div>
+  <div class="tab-content" id="tab-profil">
+    <div id="profil-content"></div>
+  </div>
+</main>
+
+<script>
+// ─── DONNÉES PROGRAMMES ───────────────────────────────────────────────────────
+
+const PROGRAMS = {
+
+  // ── MARATHON ROUTE ──────────────────────────────────────────────────────────
+  marathon: {
+    id: "marathon",
+    name: "Marathon Route",
+    heroTitle: "MARATHON<br><span>SUB 4H00</span>",
+    heroSub: "Programme adapté à votre niveau avancé, basé sur votre chrono de 4h26 et allure 6:30/km.",
+    heroWatermark: "42.195",
+    heroStats: [
+      { val:"12", lbl:"Semaines" }, { val:"4", lbl:"Séances/sem" },
+      { val:"~5:41", lbl:"Allure cible" }, { val:"26 ans", lbl:"Âge" }
+    ],
+    stats: [
+      { val:"48", unit:"km", lbl:"Distance max parcourue" },
+      { val:"4h26", unit:"", lbl:"Chrono marathon actuel" },
+      { val:"6:30", unit:"/km", lbl:"Allure actuelle" },
+      { val:"~5:41", unit:"/km", lbl:"Allure cible" }
+    ],
+    conseils: [
+      { icon:"🏃", bg:"#F5E8EC", title:"Règle des 80/20", text:"80% de vos séances doivent être à faible intensité (zone 1-2). Les 20% restants sont les séances de qualité. C'est la clé pour progresser sans se blesser sur marathon." },
+      { icon:"💪", bg:"#D8F3DC", title:"Le renforcement, votre allié", text:"Fessiers, ischio-jambiers et gainage sont les muscles qui vous feront tenir les 42 km. Planifiez les séances salle le lendemain d'une sortie." },
+      { icon:"💧", bg:"#E3EEF9", title:"Nutrition & hydratation", text:"Testez 1 gel toutes les 45 min dès les sorties de +20 km. Ne testez jamais le jour J ce que vous n'avez pas pratiqué à l'entraînement." },
+      { icon:"😴", bg:"#FFF3CD", title:"Le sommeil, 1ère performance", text:"Visez 8h par nuit. Les nuits J-3 et J-2 comptent plus que la nuit avant la course. Le corps s'adapte pendant le sommeil." },
+      { icon:"📏", bg:"#F5E8EC", title:"Stratégie de course", text:"Partez à 5:45/km les 10 premiers km même si vous vous sentez bien. 95% des marathons ratés le sont à cause d'un départ trop rapide." },
+      { icon:"🔁", bg:"#D8F3DC", title:"Respectez les semaines de récup", text:"Les semaines allégées sont celles où vous progressez vraiment. Ne les transformez pas en semaines normales." }
+    ],
+    profil: [
+      { lbl:"Objectif", val:"Marathon Sub 4h00" }, { lbl:"Niveau", val:"Avancé" },
+      { lbl:"Âge", val:"26 ans" }, { lbl:"PB Marathon", val:"4h26" },
+      { lbl:"Allure actuelle", val:"6:30 /km" }, { lbl:"Distance max", val:"48 km" },
+      { lbl:"Séances/semaine", val:"4 séances" }, { lbl:"Renforcement", val:"En salle" }
+    ],
+    profilNote: "Avec 48 km déjà parcourus et un marathon en 4h26, vous avez une excellente base d'endurance. Le principal levier sera l'amélioration de la VMA et de l'économie de course via le fractionné et le renforcement ciblé. Une amélioration de 26 min est tout à fait réaliste sur 12 semaines.",
+    weeks: [
+      // PHASE 1
+      { week:1, phase:1, phaseName:"Phase 1 — Fondation & Remise en Route", phaseRange:"Semaines 1-4", recovery:false, title:"Remise en route progressive", volume:42,
+        sessions:[
+          { type:"run", day:"Mardi", name:"Footing endurance fondamentale", duration:"50 min", desc:"Sortie tranquille pour relancer la machine. Allure conversation, FC zone 2.", details:["Allure : 7:00/km","FC : 65-70% FCmax","Terrain plat","Échauffement 5 min marche"], strength:null },
+          { type:"interval", day:"Jeudi", name:"Fractionné court — VMA", duration:"55 min", desc:"8 x 400m à 105% VMA. Échauffement 15 min, puis séries, récupération 15 min.", details:["8 x 400m à 105% VMA","Récup : 1min30 trot","Allure 400m : ~2:05","Total qualité : 3,2 km"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Séance complète de renforcement spécifique course. Focus fessiers, gainage, proprioception.", details:["3 tours de circuit","Repos 60s entre exercices","Échauffement 10 min vélo"],
+            strength:[{name:"Squat bulgare",sets:"4 x 12 reps/jambe"},{name:"Hip thrust barre",sets:"4 x 15 reps"},{name:"Fentes marchées",sets:"3 x 20 reps"},{name:"Mollets debout machine",sets:"4 x 20 reps"},{name:"Gainage planche",sets:"4 x 45 secondes"},{name:"Pont fessier unilatéral",sets:"3 x 15/jambe"},{name:"Step-up boîte",sets:"3 x 12/jambe"},{name:"Tirage horizontal",sets:"3 x 12 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie", duration:"1h30", desc:"Sortie longue à allure endurance fondamentale. La durée prime sur la vitesse.", details:["Allure : 6:50/km","Distance : ~13 km","Ravitaillement eau","Terrain varié conseillé"], strength:null }
+        ]},
+      { week:2, phase:1, phaseName:"Phase 1 — Fondation & Remise en Route", phaseRange:"Semaines 1-4", recovery:false, title:"Augmentation volume", volume:47,
+        sessions:[
+          { type:"run", day:"Mardi", name:"Footing + accélérations", duration:"55 min", desc:"Footing en endurance fondamentale avec 6 accélérations progressives de 20s en fin de séance.", details:["Allure de base : 6:50/km","6 x 20s accélérations","Récup 2 min","Finir cool-down 10 min"], strength:null },
+          { type:"interval", day:"Jeudi", name:"Tempo — Allure marathon", duration:"65 min", desc:"3 x 10 min à allure marathon cible 5:45/km. Travail spécifique.", details:["Écha 15 min","3 x 10 min à 5:45/km","Récup 3 min trot","Retour calme 15 min"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Focus chaîne postérieure et stabilité de cheville.", details:["Circuit 3 passages","Tempo lent à la descente","Qualité > quantité"],
+            strength:[{name:"Deadlift roumain",sets:"4 x 10 reps"},{name:"Hip thrust unilatéral",sets:"3 x 12/jambe"},{name:"Squat gobelet",sets:"4 x 15 reps"},{name:"Élévation mollets assis",sets:"4 x 25 reps"},{name:"Gainage latéral",sets:"3 x 40s/côté"},{name:"Monster walk élastique",sets:"3 x 20 pas/sens"},{name:"Extensions lombaires",sets:"3 x 15 reps"},{name:"Tirage poulie haute",sets:"3 x 12 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie — endurance", duration:"1h45", desc:"Augmentation progressive. Restez en zone 2, la durée prime.", details:["Allure : 6:45/km","Distance : ~16 km","Gel ou barre à 45 min","Hydratation régulière"], strength:null }
+        ]},
+      { week:3, phase:1, phaseName:"Phase 1 — Fondation & Remise en Route", phaseRange:"Semaines 1-4", recovery:false, title:"Intensité croissante", volume:52,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné long — seuil", duration:"65 min", desc:"2 x 20 min au seuil lactique à 5:10/km.", details:["2 x 20 min à allure seuil","Allure seuil : 5:10/km","Récup 5 min trot","Écha + retour 20 min"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing récupération active", duration:"45 min", desc:"Séance légère. Jambes légères, tête libre. FC < 65% FCmax.", details:["Allure : 7:15/km","Aucune pression","FC < 65% FCmax","Stretching 10 min après"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Puissance et explosivité des membres inférieurs. Travail pliométrique inclus.", details:["Échauffement vélo 10 min","Supersets","Repos 90s entre supersets"],
+            strength:[{name:"Squat sauté (pliométrie)",sets:"4 x 8 reps"},{name:"Hip thrust barre lourd",sets:"4 x 8 reps"},{name:"Leg press unilatéral",sets:"3 x 12/jambe"},{name:"Curl ischio couché",sets:"4 x 12 reps"},{name:"Gainage dynamique",sets:"3 x 30s"},{name:"Fentes sautées",sets:"3 x 10/jambe"},{name:"Mollets presse à jambe",sets:"4 x 20 reps"},{name:"Rowing barre",sets:"3 x 10 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie progressive", duration:"2h00", desc:"Les 30 dernières minutes à allure marathon cible.", details:["1h30 à 6:40/km","30 min à 5:45/km","Distance ~18 km","Test nutrition : 1 gel"], strength:null }
+        ]},
+      { week:4, phase:1, phaseName:"Phase 1 — Fondation & Remise en Route", phaseRange:"Semaines 1-4", recovery:true, title:"Semaine de récupération", volume:30,
+        sessions:[
+          { type:"run", day:"Mardi", name:"Footing très léger", duration:"40 min", desc:"Séance facile. Le corps se reconstruit. Focus technique de foulée.", details:["Allure : 7:20/km","Focus foulée légère","Cadence ~180 pas/min"], strength:null },
+          { type:"strength", day:"Jeudi", name:"Renforcement léger — Salle", duration:"45 min", desc:"Charges réduites de 30%. Maintien musculaire sans fatigue.", details:["Charges -30%","2 séries par exercice","Qualité d'exécution"],
+            strength:[{name:"Squat bulgare léger",sets:"2 x 12/jambe"},{name:"Hip thrust léger",sets:"2 x 15 reps"},{name:"Gainage planche",sets:"3 x 40 secondes"},{name:"Mollets debout",sets:"2 x 20 reps"},{name:"Pont fessier bilatéral",sets:"2 x 20 reps"},{name:"Étirements actifs",sets:"15 minutes"}] },
+          { type:"run", day:"Samedi", name:"Footing endurance tranquille", duration:"50 min", desc:"Sortie confortable pour maintenir l'endurance sans créer de fatigue.", details:["Allure : 7:00/km","Terrain plat","Bonne récup pour phase 2"], strength:null },
+          { type:"rest", day:"Dimanche", name:"Repos actif", duration:"—", desc:"Natation, vélo doux, yoga ou marche. Le corps récupère et se renforce.", details:["Natation douce","Stretching global","Massage si possible"], strength:null }
+        ]},
+      // PHASE 2
+      { week:5, phase:2, phaseName:"Phase 2 — Développement & Intensité", phaseRange:"Semaines 5-8", recovery:false, title:"Montée en puissance", volume:55,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"VMA — Fractionné intense", duration:"60 min", desc:"10 x 400m à 107% VMA avec courtes récupérations.", details:["10 x 400m à 107% VMA","Récup : 1min trot","Allure 400m : ~2:00","Écha + retour : 20 min"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing + strides", duration:"55 min", desc:"Footing avec 8 strides de 100m en fin de séance pour travailler la foulée.", details:["45 min à 6:45/km","8 x 100m strides","Récup 100m marche","Sensation légèreté"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement musculaire — Salle", duration:"65 min", desc:"Séance de force maximale avec charges plus lourdes.", details:["Charges +10%","Repos 2 min entre séries","Spotter recommandé"],
+            strength:[{name:"Squat barre (lourd)",sets:"5 x 5 reps"},{name:"Hip thrust barre (lourd)",sets:"5 x 6 reps"},{name:"Fentes haltères",sets:"4 x 10/jambe"},{name:"Deadlift roumain",sets:"4 x 8 reps"},{name:"Gainage avec rotation",sets:"3 x 30s/côté"},{name:"Mollets debout chargé",sets:"5 x 15 reps"},{name:"Abducteurs machine",sets:"3 x 20 reps"},{name:"Extensions lombaires",sets:"3 x 15 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie — 20 km", duration:"2h15", desc:"Cap symbolique des 20 km. Hydratation et nutrition testées.", details:["Allure : 6:35/km","Distance : 20 km","2 gels (km 8 et km 16)","Chaussures de course J"], strength:null }
+        ]},
+      { week:6, phase:2, phaseName:"Phase 2 — Développement & Intensité", phaseRange:"Semaines 5-8", recovery:false, title:"Spécifique marathon", volume:58,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Tempo long — allure spécifique", duration:"70 min", desc:"4 x 10 min à allure marathon cible 5:41/km. La séance la plus spécifique.", details:["Écha 15 min","4 x 10 min à 5:41/km","Récup 2 min","Retour 15 min"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing récupération", duration:"50 min", desc:"Footing facile pour récupérer du tempo du mardi.", details:["Allure : 7:10/km","FC zone 1-2","Terrain souple si possible"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"65 min", desc:"Focus proprioception et stabilité de cheville. BOSU ball inclus.", details:["Travail équilibre","BOSU ball","Unipodal prioritaire"],
+            strength:[{name:"Squat unilatéral BOSU",sets:"4 x 10/jambe"},{name:"Hip thrust unilatéral",sets:"4 x 10/jambe"},{name:"Équilibre unipodal yeux fermés",sets:"3 x 30s/jambe"},{name:"Fentes recul haltère",sets:"3 x 12/jambe"},{name:"Gainage élévation bras/jambe",sets:"3 x 10/côté"},{name:"Mollets sur step unilatéral",sets:"4 x 15/jambe"},{name:"Abduction hanche élastique",sets:"3 x 20/jambe"},{name:"Rowing haltères",sets:"3 x 12 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie — 22 km", duration:"2h25", desc:"Nouvelle distance record d'entraînement. Patient les 15 premiers km.", details:["Allure : 6:35/km","Distance : 22 km","Gels testés","Retour souple"], strength:null }
+        ]},
+      { week:7, phase:2, phaseName:"Phase 2 — Développement & Intensité", phaseRange:"Semaines 5-8", recovery:false, title:"Pic d'intensité", volume:62,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné 1000m", duration:"70 min", desc:"6 x 1000m à 5:00/km pour développer l'endurance à haute intensité.", details:["6 x 1000m à 5:00/km","Récup 2 min trot","Écha + retour 20 min","FC max en fin d'interval"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing + travail côtes", duration:"60 min", desc:"Footing avec 6 côtes de 200m pour la puissance musculaire.", details:["40 min footing","6 x 200m côte","Descente récupération","Bon pour genoux et fessiers"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"65 min", desc:"Polyarticulaire avec travail core pour la stabilité en fin de marathon.", details:["Supersets agoniste-antagoniste","Core en fin de séance","Étirements 15 min"],
+            strength:[{name:"Hip thrust barre (charge max)",sets:"5 x 5 reps"},{name:"Squat gobelet profond",sets:"4 x 12 reps"},{name:"Nordic curl (ischio)",sets:"4 x 6 reps"},{name:"Fentes sautées",sets:"4 x 8/jambe"},{name:"Gainage anti-rotation Pallof",sets:"3 x 15/côté"},{name:"Mollets sautés (pliométrie)",sets:"3 x 15 reps"},{name:"Relevé de jambe suspendu",sets:"3 x 15 reps"},{name:"Tirage vertical",sets:"3 x 10 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie — 25 km", duration:"2h45", desc:"5 km finaux à allure marathon. Gérez l'énergie sur les 20 premiers km.", details:["20 km à 6:30/km","5 km à 5:50/km","Distance : 25 km","3 gels obligatoires"], strength:null }
+        ]},
+      { week:8, phase:2, phaseName:"Phase 2 — Développement & Intensité", phaseRange:"Semaines 5-8", recovery:true, title:"Semaine de récupération", volume:35,
+        sessions:[
+          { type:"run", day:"Mardi", name:"Footing très léger", duration:"40 min", desc:"Volume réduit de 40%. Le corps intègre les adaptations des 3 dernières semaines.", details:["Allure : 7:20/km","Aucune pression","Plaisir de courir"], strength:null },
+          { type:"strength", day:"Jeudi", name:"Renforcement léger — Salle", duration:"45 min", desc:"Maintien musculaire avec charges réduites. Priorité mobilité et proprioception.", details:["Charges -30%","2 séries max","Mobilité articulaire"],
+            strength:[{name:"Squat au poids de corps",sets:"3 x 20 reps"},{name:"Hip thrust sans charge",sets:"3 x 20 reps"},{name:"Gainage planche",sets:"3 x 45s"},{name:"Fentes statiques étirement",sets:"3 x 30s/jambe"},{name:"Mollets assis léger",sets:"2 x 20 reps"},{name:"Mobilité hanches et chevilles",sets:"15 min"}] },
+          { type:"run", day:"Samedi", name:"Footing récupération", duration:"50 min", desc:"Vous devez vous sentir reposé et prêt pour la phase 3.", details:["Allure : 7:00/km","Étirements après"], strength:null },
+          { type:"rest", day:"Dimanche", name:"Repos actif", duration:"—", desc:"Natation, vélo doux ou yoga. Recharge complète avant la phase finale.", details:["Massage sportif recommandé","Bain froid si inflammations","Bilan de mi-programme"], strength:null }
+        ]},
+      // PHASE 3
+      { week:9, phase:3, phaseName:"Phase 3 — Spécifique Marathon & Affûtage", phaseRange:"Semaines 9-12", recovery:false, title:"Spécifique marathon", volume:65,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Tempo race pace", duration:"75 min", desc:"5 x 10 min à allure marathon exacte 5:41/km. La séance la plus spécifique.", details:["Écha 15 min","5 x 10 min à 5:41/km","Récup 90s trot","Retour 15 min"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing récupération", duration:"55 min", desc:"Récupération active. Préparez la sortie longue du dimanche.", details:["Allure : 7:00/km","Aucune pression"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Force-endurance. Focus ischio et mollets pour tenir les 42 km.", details:["Charges stables","Séries longues","Focus ischio et mollets"],
+            strength:[{name:"Squat barre",sets:"4 x 8 reps"},{name:"Hip thrust barre",sets:"4 x 10 reps"},{name:"Leg curl couché",sets:"4 x 12 reps"},{name:"Step-up avec haltères",sets:"4 x 10/jambe"},{name:"Gainage planche longue",sets:"4 x 60s"},{name:"Mollets debout lourds",sets:"5 x 12 reps"},{name:"Abduction couché élastique",sets:"3 x 20 reps"},{name:"Tirage horizontal",sets:"3 x 10 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie — 28 km", duration:"3h05", desc:"Sortie longue majeure. 5 derniers km à allure marathon. Gestion mentale clé.", details:["23 km à 6:25/km","5 km à 5:45/km","3-4 gels","Eau tous les 7 km"], strength:null }
+        ]},
+      { week:10, phase:3, phaseName:"Phase 3 — Spécifique Marathon & Affûtage", phaseRange:"Semaines 9-12", recovery:false, title:"Volume maximum", volume:68,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné mixte", duration:"70 min", desc:"5 x 1000m à 5:05/km puis 2 x 10 min à 5:45/km. Travail multi-filières.", details:["5 x 1000m à 5:05/km","Puis 2 x 10 min tempo","Récup adaptée"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing moyen + strides", duration:"60 min", desc:"Footing de volume moyen avec strides pour entretenir la vitesse.", details:["50 min à 6:40/km","8 x 100m strides","Récup complète entre strides"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Séance équilibrée avant la dernière grande sortie longue.", details:["Intensité modérée","Focus récupération active","Étirements prolongés"],
+            strength:[{name:"Hip thrust surélevé poids corps",sets:"4 x 20 reps"},{name:"Squat gobelet",sets:"4 x 12 reps"},{name:"Pont fessier unilatéral",sets:"3 x 15/jambe"},{name:"Fentes marchées haltères",sets:"3 x 12/jambe"},{name:"Gainage bird-dog",sets:"3 x 10/côté"},{name:"Mollets sur step",sets:"4 x 20 reps"},{name:"Adducteurs machine",sets:"3 x 20 reps"},{name:"Étirements actifs complets",sets:"15 min"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie — 30 km", duration:"3h20", desc:"La sortie la plus longue du programme. Pic de volume. Gérez nutrition et allure.", details:["25 km à 6:25/km","5 km à 5:45/km","4 gels minimum"], strength:null }
+        ]},
+      { week:11, phase:3, phaseName:"Phase 3 — Spécifique Marathon & Affûtage", phaseRange:"Semaines 9-12", recovery:false, title:"Début affûtage", volume:48,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné qualitatif", duration:"65 min", desc:"Dernière séance intense. Qualité et volume réduit.", details:["4 x 1000m à 5:00/km","Récup 2 min trot","Sentez la vitesse"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing aisé", duration:"50 min", desc:"Le corps commence à se recharger pour le jour J. Légèreté dans les jambes.", details:["Allure : 7:00/km","Visualisez la course"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement léger — Salle", duration:"45 min", desc:"Avant-dernière séance. Charges légères, maintien musculaire uniquement.", details:["Charges -20%","2-3 séries","Aucune douleur tolérée"],
+            strength:[{name:"Squat au poids de corps",sets:"3 x 15 reps"},{name:"Hip thrust léger",sets:"3 x 15 reps"},{name:"Gainage planche",sets:"3 x 45s"},{name:"Fentes statiques",sets:"2 x 12/jambe"},{name:"Mollets debout léger",sets:"3 x 20 reps"},{name:"Mobilité et étirements",sets:"20 min"}] },
+          { type:"long", day:"Dimanche", name:"Sortie longue réduite — 20 km", duration:"2h10", desc:"5 derniers km à allure marathon pour garder les sensations.", details:["15 km à 6:35/km","5 km à 5:45/km","Tenue de course prévue J"], strength:null }
+        ]},
+      { week:12, phase:3, phaseName:"Phase 3 — Spécifique Marathon & Affûtage", phaseRange:"Semaines 9-12", recovery:true, title:"Semaine de course — Affûtage final", volume:20,
+        sessions:[
+          { type:"run", day:"Lundi", name:"Footing très léger", duration:"30 min", desc:"Dernière semaine ! Footing léger pour garder les jambes actives. Aucun effort.", details:["Allure : 7:30/km","Plaisir total","Visualisation positive"], strength:null },
+          { type:"interval", day:"Mercredi", name:"10 min allure marathon", duration:"35 min", desc:"Courte activation à allure marathon pour rappeler au corps son objectif.", details:["Écha 10 min","10 min à 5:41/km","Sentez la fluidité"], strength:null },
+          { type:"run", day:"Vendredi", name:"Footing d'activation — J-2", duration:"20 min", desc:"Très courte, juste pour activer les jambes. Repos complet samedi.", details:["Allure : 7:00/km","20 min max","4 x 30s accélérations douces"], strength:null },
+          { type:"rest", day:"Dimanche", name:"MARATHON — JOUR J 🏁", duration:"~3h55", desc:"C'est le grand jour ! Partez à 5:45/km les 10 premiers km, puis gérez. Croyez en vos jambes.", details:["Km 1-10 : 5:45/km","Km 10-30 : 5:41/km","Km 30-42 : donnez tout","Sub-4h dans vos jambes !"], strength:null }
+        ]}
+    ]
+  },
+
+  // ── MARATHON TRAIL ──────────────────────────────────────────────────────────
+  marathon_trail: {
+    id: "marathon_trail",
+    name: "Marathon Trail",
+    heroTitle: "MARATHON TRAIL<br><span>SUB 4H00</span>",
+    heroSub: "Programme trail modéré (D+ 500-1500m), basé sur votre expérience de 48km sable/chemin.",
+    heroWatermark: "TRAIL",
+    heroStats: [
+      { val:"12", lbl:"Semaines" }, { val:"4", lbl:"Séances/sem" },
+      { val:"D+1000m", lbl:"Dénivelé cible" }, { val:"Sub 4h", lbl:"Objectif" }
+    ],
+    stats: [
+      { val:"48", unit:"km", lbl:"Distance max (sable/chemin)" },
+      { val:"4h00", unit:"", lbl:"Objectif chrono" },
+      { val:"6:30", unit:"/km", lbl:"Allure route actuelle" },
+      { val:"~D+1000m", unit:"", lbl:"Dénivelé visé" }
+    ],
+    conseils: [
+      { icon:"⛰️", bg:"#F5EDD6", title:"Courir en montée, marcher les raidillons", text:"Sur trail, la marche rapide en montée (>15% de pente) est souvent plus efficace énergétiquement que courir. Entraînez-vous à la marche nordique en montée dès la phase 1." },
+      { icon:"👟", bg:"#F5E8EC", title:"Chaussures trail obligatoires", text:"Choisissez des chaussures trail avec grip adapté au terrain (semelle Vibram ou similaire). Testez-les en entraînement plusieurs semaines avant la course." },
+      { icon:"💪", bg:"#D8F3DC", title:"Renforcement spécifique montée/descente", text:"Les quadriceps souffrent énormément en descente. Les exercices excentriques (squat lent à la descente, step-down) sont prioritaires pour protéger vos genoux." },
+      { icon:"🎒", bg:"#E3EEF9", title:"Hydratation en autonomie", text:"Équipez-vous d'un sac trail ou de flasks. Testez votre matériel à l'entraînement. En trail, les ravitaillements sont espacés, prévoyez 500ml/heure minimum." },
+      { icon:"🧠", bg:"#FFF3CD", title:"Lecture de terrain", text:"Entraînez-vous à regarder loin devant vous sur les sentiers. En course, votre regard doit anticiper 3-4 mètres. La concentration mentale est aussi importante que la condition physique." },
+      { icon:"🔁", bg:"#D8F3DC", title:"Intégrez le dénivelé progressivement", text:"Augmentez le D+ de 10% maximum par semaine pour éviter les surmenages. Les semaines de récup sont encore plus importantes en trail qu'en route." }
+    ],
+    profil: [
+      { lbl:"Objectif", val:"Marathon Trail Sub 4h" }, { lbl:"Terrain", val:"Trail modéré D+ 500-1500m" },
+      { lbl:"Âge", val:"26 ans" }, { lbl:"Expérience", val:"48km sable/chemin" },
+      { lbl:"Allure route", val:"6:30 /km" }, { lbl:"Niveau", val:"Avancé" },
+      { lbl:"Séances/semaine", val:"4 séances" }, { lbl:"Renforcement", val:"En salle" }
+    ],
+    profilNote: "Votre expérience sur 48km en terrain sable/chemin est un excellent point de départ pour le trail modéré. Le principal défi sera l'adaptation au dénivelé et la gestion de l'effort en montée/descente. Le renforcement des quadriceps et la proprioception seront les clés de votre préparation.",
+    weeks: [
+      { week:1, phase:1, phaseName:"Phase 1 — Adaptation Trail & Fondation", phaseRange:"Semaines 1-4", recovery:false, title:"Découverte du dénivelé", volume:38,
+        sessions:[
+          { type:"run", day:"Mardi", name:"Footing route — endurance", duration:"50 min", desc:"Sortie route tranquille pour poser les bases d'endurance. Allure conversation.", details:["Allure : 7:00/km","Zone 2 cardiaque","Terrain plat"], strength:null },
+          { type:"trail", day:"Jeudi", name:"Sortie trail initiation — D+200m", duration:"60 min", desc:"Première sortie trail avec dénivelé modéré. Marchez les montées si nécessaire, soyez prudent en descente.", details:["D+ : ~200m","Allure adaptée au terrain","Marche autorisée en montée","Attention aux appuis"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Focus quadriceps excentriques et stabilité de cheville. Spécifique descente trail.", details:["Excentriques prioritaires","Step-down lent","Proprioception cheville"],
+            strength:[{name:"Squat excentrique lent (5s descente)",sets:"4 x 10 reps"},{name:"Step-down unilatéral",sets:"4 x 12/jambe"},{name:"Hip thrust barre",sets:"3 x 15 reps"},{name:"Fentes marchées",sets:"3 x 16 reps"},{name:"Gainage planche",sets:"4 x 45s"},{name:"Mollets step unilatéral",sets:"4 x 15/jambe"},{name:"Équilibre BOSU unilatéral",sets:"3 x 30s/jambe"},{name:"Tirage horizontal",sets:"3 x 12 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie trail — D+300m", duration:"1h45", desc:"Première vraie sortie longue trail. Gérez l'effort sur le dénivelé, ne forcez pas.", details:["D+ : ~300m","Allure trail 7:30/km équivalent","Bâtons si disponibles","Ravitaillement eau"], strength:null }
+        ]},
+      { week:2, phase:1, phaseName:"Phase 1 — Adaptation Trail & Fondation", phaseRange:"Semaines 1-4", recovery:false, title:"Progression D+", volume:42,
+        sessions:[
+          { type:"run", day:"Mardi", name:"Footing + côtes répétées", duration:"55 min", desc:"Footing avec 8 montées de côte de 30s pour habituer les jambes au dénivelé.", details:["40 min footing","8 x 30s montée","Descente récup trot","Renforce fessiers/mollets"], strength:null },
+          { type:"trail", day:"Jeudi", name:"Sortie trail technique — D+400m", duration:"70 min", desc:"Travail technique sur sentiers variés. Focus appuis et lecture du terrain.", details:["D+ : ~400m","Technique de foulée trail","Regard loin devant","Marche nordique en montée"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Puissance des jambes et renforcement lombaire pour les montées.", details:["Supersets jambes","Focus ischio et mollets","Gainage lombaire"],
+            strength:[{name:"Deadlift roumain",sets:"4 x 10 reps"},{name:"Hip thrust unilatéral",sets:"4 x 10/jambe"},{name:"Leg press incliné",sets:"4 x 12 reps"},{name:"Curl ischio couché",sets:"4 x 12 reps"},{name:"Gainage latéral",sets:"3 x 40s/côté"},{name:"Mollets debout lourds",sets:"4 x 20 reps"},{name:"Extensions lombaires",sets:"3 x 15 reps"},{name:"Tirade poulie haute",sets:"3 x 12 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie trail — D+500m", duration:"2h00", desc:"Augmentation du D+. Testez votre sac d'hydratation trail.", details:["D+ : ~500m","Allure trail","Sac d'hydratation","1 gel ou barre test"], strength:null }
+        ]},
+      { week:3, phase:1, phaseName:"Phase 1 — Adaptation Trail & Fondation", phaseRange:"Semaines 1-4", recovery:false, title:"Intensité trail", volume:46,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné côtes — puissance montée", duration:"60 min", desc:"6 montées intensives de 1 min pour développer la puissance spécifique trail.", details:["Écha 15 min","6 x 1 min montée max","Descente récup marche","Retour 15 min"], strength:null },
+          { type:"trail", day:"Jeudi", name:"Sortie trail endurance — D+500m", duration:"75 min", desc:"Sortie endurance sur terrain varié. Commencez à courir toutes les montées modérées.", details:["D+ : ~500m","Courez les pentes <12%","Marchez les pentes >15%","Zone 2-3"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"65 min", desc:"Pliométrie et puissance explosive. Prépare les accélérations sur terrain plat.", details:["Pliométrie incluse","Repos 2 min entre séries","Focus genoux et chevilles"],
+            strength:[{name:"Squat sauté",sets:"4 x 8 reps"},{name:"Fentes sautées",sets:"4 x 8/jambe"},{name:"Hip thrust lourd",sets:"4 x 8 reps"},{name:"Step-up explosif",sets:"3 x 10/jambe"},{name:"Gainage dynamique",sets:"3 x 30s"},{name:"Mollets sautés",sets:"3 x 15 reps"},{name:"Nordic curl",sets:"3 x 6 reps"},{name:"Rowing barre",sets:"3 x 10 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie trail — D+700m", duration:"2h15", desc:"Augmentation significative du D+. Gestion de l'effort sur les montées longues.", details:["D+ : ~700m","Distance ~18 km","2 gels testés","Sac trail obligatoire"], strength:null }
+        ]},
+      { week:4, phase:1, phaseName:"Phase 1 — Adaptation Trail & Fondation", phaseRange:"Semaines 1-4", recovery:true, title:"Semaine de récupération", volume:26,
+        sessions:[
+          { type:"run", day:"Mardi", name:"Footing léger — route", duration:"40 min", desc:"Récupération active sur route. Jambes légères, aucune pression.", details:["Allure : 7:20/km","Aucun dénivelé","Récupération active"], strength:null },
+          { type:"strength", day:"Jeudi", name:"Renforcement léger — Salle", duration:"45 min", desc:"Charges réduites. Mobilité et étirements actifs prioritaires.", details:["Charges -30%","2 séries max","Mobilité cheville et hanche"],
+            strength:[{name:"Squat léger",sets:"2 x 15 reps"},{name:"Hip thrust poids corps",sets:"2 x 20 reps"},{name:"Step-down lent léger",sets:"2 x 10/jambe"},{name:"Gainage planche",sets:"3 x 40s"},{name:"Mobilité cheville",sets:"10 min"},{name:"Étirements actifs",sets:"15 min"}] },
+          { type:"trail", day:"Samedi", name:"Petite sortie trail — D+200m", duration:"50 min", desc:"Maintien de la connexion avec le terrain trail. Sortie tranquille.", details:["D+ : ~200m","Allure très confortable","Plaisir de courir"], strength:null },
+          { type:"rest", day:"Dimanche", name:"Repos actif", duration:"—", desc:"Natation, yoga ou vélo doux. Recharge pour la phase 2.", details:["Yoga recommandé","Bain froid si courbatures","Massage jambes"], strength:null }
+        ]},
+      { week:5, phase:2, phaseName:"Phase 2 — Développement Trail Intensif", phaseRange:"Semaines 5-8", recovery:false, title:"Montée en D+", volume:50,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné côtes longues", duration:"65 min", desc:"4 montées de 3 min à haute intensité pour simuler les grosses bosses du trail.", details:["4 x 3 min montée","Récup descente marche","Puissance maximale","Écha + retour 20 min"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing récup + strides", duration:"55 min", desc:"Footing récupération avec strides pour entretenir la vitesse de jambes.", details:["45 min zone 1","6 x 80m strides","Récup complète","Terrain plat"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement musculaire — Salle", duration:"65 min", desc:"Force maximale jambes. Prépare les longues montées de la phase 2.", details:["Charges maximales","Repos 2-3 min","Spotter recommandé"],
+            strength:[{name:"Squat barre lourd",sets:"5 x 5 reps"},{name:"Hip thrust barre lourd",sets:"5 x 6 reps"},{name:"Leg press unilatéral",sets:"4 x 10/jambe"},{name:"Step-down excentrique",sets:"4 x 12/jambe"},{name:"Gainage rotation",sets:"3 x 30s/côté"},{name:"Mollets debout chargé",sets:"5 x 15 reps"},{name:"Nordic curl",sets:"4 x 6 reps"},{name:"Extensions lombaires",sets:"3 x 15 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie trail — D+900m", duration:"2h30", desc:"Grand D+ de la semaine. Testez votre stratégie marche/course en montée.", details:["D+ : ~900m","Distance ~20 km","3 gels testés","Sac trail"], strength:null }
+        ]},
+      { week:6, phase:2, phaseName:"Phase 2 — Développement Trail Intensif", phaseRange:"Semaines 5-8", recovery:false, title:"Spécifique terrain", volume:53,
+        sessions:[
+          { type:"trail", day:"Mardi", name:"Sortie trail technique rapide", duration:"70 min", desc:"Sortie trail à allure soutenue avec dénivelé. Travail de la descente rapide.", details:["D+ : ~600m","Allure course compétition","Descente maîtrisée","Focus appuis"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing route récupération", duration:"50 min", desc:"Récupération sur route après l'effort du mardi.", details:["Allure : 7:00/km","Zone 1-2","Terrain plat"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"65 min", desc:"Proprioception et stabilité. Prévention des entorses sur terrain irrégulier.", details:["BOSU prioritaire","Exercices unipodaux","Cheville renforcée"],
+            strength:[{name:"Squat BOSU unilatéral",sets:"4 x 10/jambe"},{name:"Hip thrust unilatéral",sets:"4 x 12/jambe"},{name:"Équilibre yeux fermés",sets:"3 x 40s/jambe"},{name:"Fentes instables",sets:"3 x 12/jambe"},{name:"Gainage élévation alt",sets:"3 x 10/côté"},{name:"Mollets step excentrique",sets:"4 x 15/jambe"},{name:"Abduction élastique",sets:"3 x 20/jambe"},{name:"Rowing haltères",sets:"3 x 12 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie trail — D+1000m", duration:"2h45", desc:"Cap du D+1000m. Gérez l'effort sur les montées, récupérez en descente.", details:["D+ : ~1000m","Distance ~22 km","Ravitaillement complet","Mentalement fort"], strength:null }
+        ]},
+      { week:7, phase:2, phaseName:"Phase 2 — Développement Trail Intensif", phaseRange:"Semaines 5-8", recovery:false, title:"Pic de préparation", volume:57,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Séance mixte — vitesse + D+", duration:"75 min", desc:"Alternance fractionné plat et montées répétées. Travail complet.", details:["4 x 1000m à 5:10/km plat","Puis 4 x 2 min montée","Récup adaptée","Écha + retour 20 min"], strength:null },
+          { type:"trail", day:"Jeudi", name:"Sortie trail endurance — D+600m", duration:"70 min", desc:"Sortie endurance trail à allure confortable avec dénivelé soutenu.", details:["D+ : ~600m","Zone 2-3","Courez toutes les pentes <15%","Hydratation"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"65 min", desc:"Dernier bloc de force avant affûtage. Exercices polyarticulaires lourds.", details:["Force-endurance","Séries longues","Gainage core long"],
+            strength:[{name:"Hip thrust barre (charge max)",sets:"5 x 5 reps"},{name:"Squat bulgare haltères",sets:"4 x 10/jambe"},{name:"Step-up explosif",sets:"4 x 8/jambe"},{name:"Fentes sautées",sets:"3 x 10/jambe"},{name:"Gainage Pallof anti-rotation",sets:"3 x 15/côté"},{name:"Nordic curl",sets:"4 x 6 reps"},{name:"Mollets sautés",sets:"3 x 15 reps"},{name:"Tirage vertical",sets:"3 x 10 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie trail — D+1200m", duration:"3h00", desc:"Grande sortie longue. Simulez les conditions de course au maximum.", details:["D+ : ~1200m","Distance ~24 km","4 gels","Équipement race J"], strength:null }
+        ]},
+      { week:8, phase:2, phaseName:"Phase 2 — Développement Trail Intensif", phaseRange:"Semaines 5-8", recovery:true, title:"Semaine de récupération", volume:30,
+        sessions:[
+          { type:"run", day:"Mardi", name:"Footing très léger — route", duration:"40 min", desc:"Volume réduit. Le corps récupère des efforts trail intenses de la phase 2.", details:["Allure : 7:20/km","Route plate","Légèreté"], strength:null },
+          { type:"strength", day:"Jeudi", name:"Renforcement léger — Salle", duration:"45 min", desc:"Maintien musculaire. Charges légères, priorité mobilité.", details:["Charges -30%","2 séries","Mobilité"],
+            strength:[{name:"Squat poids corps",sets:"3 x 15 reps"},{name:"Hip thrust léger",sets:"3 x 20 reps"},{name:"Step-down léger",sets:"2 x 10/jambe"},{name:"Gainage planche",sets:"3 x 45s"},{name:"Mobilité hanche/cheville",sets:"15 min"},{name:"Étirements actifs",sets:"10 min"}] },
+          { type:"trail", day:"Samedi", name:"Petite sortie trail — D+300m", duration:"55 min", desc:"Maintien du lien avec le terrain. Sortie courte et tranquille.", details:["D+ : ~300m","Allure confortable","Plaisir"], strength:null },
+          { type:"rest", day:"Dimanche", name:"Repos actif", duration:"—", desc:"Natation, yoga ou vélo doux. Recharge totale avant la phase 3.", details:["Massage recommandé","Bain froid","Bilan mi-programme"], strength:null }
+        ]},
+      { week:9, phase:3, phaseName:"Phase 3 — Spécifique Race & Affûtage", phaseRange:"Semaines 9-12", recovery:false, title:"Simulation course", volume:55,
+        sessions:[
+          { type:"trail", day:"Mardi", name:"Sortie trail race pace — D+700m", duration:"75 min", desc:"Courez à votre allure de course prévue. Simulation des conditions réelles.", details:["D+ : ~700m","Allure race pace","Nutrition race J","Équipement course"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing récupération", duration:"50 min", desc:"Récupération active après la simulation du mardi.", details:["Allure : 7:00/km","Zone 1","Aucune pression"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Force-endurance. Dernière grosse séance de renforcement.", details:["Intensité modérée-haute","Focus quadri et mollets","Gainage long"],
+            strength:[{name:"Squat barre",sets:"4 x 8 reps"},{name:"Hip thrust barre",sets:"4 x 10 reps"},{name:"Step-down excentrique",sets:"4 x 12/jambe"},{name:"Curl ischio",sets:"4 x 12 reps"},{name:"Gainage planche 60s",sets:"4 x 60s"},{name:"Mollets lourds",sets:"5 x 12 reps"},{name:"Fentes marchées",sets:"3 x 12/jambe"},{name:"Tirage horizontal",sets:"3 x 10 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie trail — D+1400m", duration:"3h15", desc:"Sortie longue maximale. 5 derniers km à allure race. Gérez mentalement.", details:["D+ : ~1400m","Distance ~26 km","4 gels","Gestion mentale"], strength:null }
+        ]},
+      { week:10, phase:3, phaseName:"Phase 3 — Spécifique Race & Affûtage", phaseRange:"Semaines 9-12", recovery:false, title:"Volume maximum trail", volume:58,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné côtes longues intensif", duration:"70 min", desc:"5 montées de 3 min à 95% FCmax. Pic de préparation spécifique montée.", details:["5 x 3 min montée","95% FCmax","Descente marche récup","Écha + retour 20 min"], strength:null },
+          { type:"trail", day:"Jeudi", name:"Sortie trail technique — D+600m", duration:"70 min", desc:"Travail technique sur descentes rapides. Amélioration de la vitesse en descente.", details:["D+ : ~600m","Focus descente","Appuis rapides","Regard loin"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Séance équilibrée avant la dernière grande sortie. Pas de fatigue excessive.", details:["Intensité modérée","Focus récup musculaire","Étirements prolongés"],
+            strength:[{name:"Hip thrust surélevé",sets:"4 x 20 reps"},{name:"Squat gobelet",sets:"4 x 12 reps"},{name:"Step-down léger",sets:"3 x 12/jambe"},{name:"Gainage bird-dog",sets:"3 x 10/côté"},{name:"Mollets step",sets:"4 x 20 reps"},{name:"Abduction élastique",sets:"3 x 20/jambe"},{name:"Fentes statiques",sets:"3 x 12/jambe"},{name:"Étirements actifs",sets:"15 min"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie trail — D+1500m", duration:"3h30", desc:"La sortie la plus longue et pentue du programme. Pic absolu de préparation.", details:["D+ : ~1500m","Distance ~28 km","5 gels","Simulation complète race"], strength:null }
+        ]},
+      { week:11, phase:3, phaseName:"Phase 3 — Spécifique Race & Affûtage", phaseRange:"Semaines 9-12", recovery:false, title:"Début affûtage", volume:40,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné qualitatif réduit", duration:"60 min", desc:"Dernière séance intense. Volume réduit, qualité maximale.", details:["3 x 3 min montée","4 x 1000m plat","Sentez la vitesse","Écha + retour 20 min"], strength:null },
+          { type:"trail", day:"Jeudi", name:"Sortie trail tranquille — D+400m", duration:"60 min", desc:"Le corps commence à récupérer. Sortie confortable sur terrain trail.", details:["D+ : ~400m","Allure confortable","Visualisez la course"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement léger — Salle", duration:"45 min", desc:"Avant-dernière séance. Charges légères uniquement.", details:["Charges -20%","2 séries","Aucune douleur"],
+            strength:[{name:"Squat poids corps",sets:"3 x 15 reps"},{name:"Hip thrust léger",sets:"3 x 15 reps"},{name:"Step-down très léger",sets:"2 x 10/jambe"},{name:"Gainage planche",sets:"3 x 45s"},{name:"Mollets léger",sets:"3 x 20 reps"},{name:"Mobilité et étirements",sets:"20 min"}] },
+          { type:"long", day:"Dimanche", name:"Sortie trail réduite — D+800m", duration:"2h15", desc:"Sortie longue réduite. Derniers km à allure course pour garder les sensations.", details:["D+ : ~800m","Distance ~18 km","2 gels","Équipement race J"], strength:null }
+        ]},
+      { week:12, phase:3, phaseName:"Phase 3 — Spécifique Race & Affûtage", phaseRange:"Semaines 9-12", recovery:true, title:"Semaine de course — Affûtage final", volume:18,
+        sessions:[
+          { type:"run", day:"Lundi", name:"Footing activation léger", duration:"30 min", desc:"Très léger, juste pour garder les jambes actives. Aucun effort.", details:["Allure : 7:30/km","20-30 min","Visualisation positive"], strength:null },
+          { type:"trail", day:"Mercredi", name:"Activation trail — D+200m", duration:"35 min", desc:"Courte sortie trail pour rappeler au corps les appuis terrain.", details:["D+ : ~200m","Allure confortable","Sentez le terrain"], strength:null },
+          { type:"run", day:"Vendredi", name:"Footing d'activation — J-2", duration:"20 min", desc:"Dernière sortie. Très courte. Repos complet samedi.", details:["20 min max","4 x 20s accélérations","Repos total samedi"], strength:null },
+          { type:"rest", day:"Dimanche", name:"MARATHON TRAIL — JOUR J 🏔️", duration:"~4h00", desc:"Le grand jour ! Partez prudemment, gérez les montées en marchant si besoin. Vos jambes sont prêtes.", details:["Montées : marchez si >15%","Descentes : relâchez et profitez","Gels : 1 toutes les 45 min","Sub-4h dans vos jambes !"], strength:null }
+        ]}
+    ]
+  },
+
+  // ── SEMI-MARATHON TRAIL ─────────────────────────────────────────────────────
+  semi: {
+    id: "semi",
+    name: "21km Trail",
+    heroTitle: "21KM TRAIL<br><span>SUB 2H00</span>",
+    heroSub: "Programme trail montagne (D+ important), objectif sub-2h depuis votre chrono de 1h46.",
+    heroWatermark: "21KM",
+    heroStats: [
+      { val:"12", lbl:"Semaines" }, { val:"4", lbl:"Séances/sem" },
+      { val:"D+élevé", lbl:"Dénivelé" }, { val:"Sub 2h", lbl:"Objectif" }
+    ],
+    stats: [
+      { val:"1h46", unit:"", lbl:"Chrono actuel 21km trail" },
+      { val:"Sub 2h", unit:"", lbl:"Objectif" },
+      { val:"6:30", unit:"/km", lbl:"Allure route actuelle" },
+      { val:"D+imp.", unit:"", lbl:"Dénivelé terrain cible" }
+    ],
+    conseils: [
+      { icon:"🏔️", bg:"#F5EDD6", title:"Adapter son allure au D+", text:"Sur trail montagne, oubliez votre allure en min/km. Gérez plutôt par effort ressenti (zones cardio) ou en heure par vertical km (VK). Une bonne règle : 1 km de montée à 10% = 1,5 km plat en effort." },
+      { icon:"💪", bg:"#D8F3DC", title:"Quadriceps excentriques — priorité absolue", text:"Les descentes trail détruisent les quadriceps non préparés. Les squats excentriques lents (5 secondes à la descente) et les step-downs doivent être faits dès la semaine 1." },
+      { icon:"🎒", bg:"#E3EEF9", title:"Équipement montagne obligatoire", text:"Veste imperméable, couverture de survie, sifflet, téléphone chargé. Même pour l'entraînement en montagne. Prévenez toujours quelqu'un de votre itinéraire et heure de retour." },
+      { icon:"🧠", bg:"#F5E8EC", title:"Gestion mentale des longues montées", text:"Sur les portions longues en montée, fragmentez mentalement : \"j'arrive à ce rocher, puis au prochain arbre\". La marche nordique (bâtons) peut être un vrai atout psychologique et physique." },
+      { icon:"🌡️", bg:"#FFF3CD", title:"Thermorégulation en altitude", text:"La température baisse de 6°C tous les 1000m d'altitude. Prévoyez toujours une couche supplémentaire. La déshydratation est plus rapide en altitude malgré le froid perçu." },
+      { icon:"🔁", bg:"#D8F3DC", title:"Récupération post-sortie montagne", text:"Une grosse sortie montagne (D+ 1000m+) nécessite 48-72h de récupération complète. Ne forcez jamais le lendemain d'une sortie longue trail. Le repos EST l'entraînement." }
+    ],
+    profil: [
+      { lbl:"Objectif", val:"21km Trail Sub 2h" }, { lbl:"Terrain", val:"Trail montagne D+ important" },
+      { lbl:"Âge", val:"26 ans" }, { lbl:"PB 21km trail", val:"1h46" },
+      { lbl:"Allure route", val:"6:30 /km" }, { lbl:"Niveau", val:"Avancé" },
+      { lbl:"Séances/semaine", val:"4 séances" }, { lbl:"Renforcement", val:"En salle" }
+    ],
+    profilNote: "Votre chrono de 1h46 sur 21km trail est déjà excellent. Descendre sous les 2h sur un trail montagne avec D+ important est ambitieux mais réalisable sur 12 semaines. L'enjeu principal sera d'améliorer votre vitesse en montée via le travail spécifique côtes et la VMA, tout en renforçant les quadriceps pour les descentes.",
+    weeks: [
+      { week:1, phase:1, phaseName:"Phase 1 — Fondation & Adaptation Montagne", phaseRange:"Semaines 1-4", recovery:false, title:"Bases et adaptation D+", volume:36,
+        sessions:[
+          { type:"run", day:"Mardi", name:"Footing route endurance", duration:"45 min", desc:"Base de route pour l'endurance fondamentale. Allure conversation.", details:["Allure : 7:00/km","Zone 2","Terrain plat"], strength:null },
+          { type:"trail", day:"Jeudi", name:"Sortie montagne initiation — D+300m", duration:"65 min", desc:"Première sortie en montagne. Marchez toutes les montées, courez les replats et descentes douces.", details:["D+ : ~300m","Marche si nécessaire","Prudence en descente","Découverte du terrain"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Focus quadriceps excentriques et stabilité cheville. Clé pour les descentes montagne.", details:["Excentriques prioritaires","5s à la descente","Proprioception"],
+            strength:[{name:"Squat excentrique 5s descente",sets:"5 x 8 reps"},{name:"Step-down unilatéral",sets:"5 x 10/jambe"},{name:"Hip thrust barre",sets:"3 x 15 reps"},{name:"Fentes reculées",sets:"3 x 12/jambe"},{name:"Gainage planche",sets:"4 x 45s"},{name:"Mollets excentrique step",sets:"4 x 15/jambe"},{name:"BOSU équilibre unilatéral",sets:"4 x 30s/jambe"},{name:"Tirage horizontal",sets:"3 x 12 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie trail — D+400m", duration:"1h45", desc:"Sortie longue avec dénivelé. Gestion de l'effort en montée, technique en descente.", details:["D+ : ~400m","Effort ressenti modéré","Test sac hydratation","Bâtons si disponibles"], strength:null }
+        ]},
+      { week:2, phase:1, phaseName:"Phase 1 — Fondation & Adaptation Montagne", phaseRange:"Semaines 1-4", recovery:false, title:"D+ croissant", volume:40,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Côtes répétées — puissance", duration:"60 min", desc:"8 montées de 45s pour développer la puissance spécifique montagne.", details:["Écha 15 min","8 x 45s montée","Descente récup marche","Retour 15 min"], strength:null },
+          { type:"trail", day:"Jeudi", name:"Sortie trail technique — D+500m", duration:"70 min", desc:"Travail sur terrain varié. Commencez à courir les pentes modérées.", details:["D+ : ~500m","Pentes <12% : courez","Pentes >15% : marchez vite","Appuis techniques"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Force et puissance des jambes. Préparation aux montées longues.", details:["Supersets","Focus chaîne postérieure","Gainage complet"],
+            strength:[{name:"Deadlift roumain",sets:"4 x 10 reps"},{name:"Hip thrust unilatéral",sets:"4 x 10/jambe"},{name:"Squat bulgare",sets:"4 x 12/jambe"},{name:"Curl ischio couché",sets:"4 x 12 reps"},{name:"Gainage latéral",sets:"3 x 40s/côté"},{name:"Mollets debout lourds",sets:"4 x 20 reps"},{name:"Extensions lombaires",sets:"3 x 15 reps"},{name:"Abduction machine",sets:"3 x 20 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie trail — D+600m", duration:"2h00", desc:"D+ significatif. Gérez l'effort sur les montées longues.", details:["D+ : ~600m","Distance ~15 km","2 gels testés","Sac trail"], strength:null }
+        ]},
+      { week:3, phase:1, phaseName:"Phase 1 — Fondation & Adaptation Montagne", phaseRange:"Semaines 1-4", recovery:false, title:"Intensité montagne", volume:44,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"VMA côtes — max puissance", duration:"65 min", desc:"6 montées de 1 min à intensité maximale. Simulation des passages difficiles de course.", details:["6 x 1 min montée max","Descente marche récup","FC proche max","Écha + retour 20 min"], strength:null },
+          { type:"trail", day:"Jeudi", name:"Sortie trail endurance — D+600m", duration:"75 min", desc:"Sortie endurance trail avec D+ soutenu. Gestion parfaite de l'effort.", details:["D+ : ~600m","Zone 2-3","Courez le plus possible","Hydratation régulière"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"65 min", desc:"Pliométrie et explosivité. Améliore la foulée rapide sur terrain plat.", details:["Pliométrie incluse","Repos complet entre séries","Genoux et chevilles"],
+            strength:[{name:"Squat sauté",sets:"4 x 8 reps"},{name:"Hip thrust lourd",sets:"4 x 8 reps"},{name:"Step-up explosif",sets:"4 x 8/jambe"},{name:"Nordic curl",sets:"4 x 6 reps"},{name:"Gainage dynamique",sets:"3 x 30s"},{name:"Fentes sautées",sets:"3 x 8/jambe"},{name:"Mollets sautés",sets:"3 x 15 reps"},{name:"Rowing barre",sets:"3 x 10 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie trail — D+800m", duration:"2h15", desc:"Belle sortie en montagne. Les jambes s'habituent au D+.", details:["D+ : ~800m","Distance ~17 km","3 gels","Bonne récup après"], strength:null }
+        ]},
+      { week:4, phase:1, phaseName:"Phase 1 — Fondation & Adaptation Montagne", phaseRange:"Semaines 1-4", recovery:true, title:"Semaine de récupération", volume:25,
+        sessions:[
+          { type:"run", day:"Mardi", name:"Footing léger route", duration:"35 min", desc:"Récupération sur route plate. Aucun effort, aucun D+.", details:["Allure : 7:30/km","Route plate","Légèreté"], strength:null },
+          { type:"strength", day:"Jeudi", name:"Renforcement léger — Salle", duration:"45 min", desc:"Maintien musculaire. Charges légères, mobilité prioritaire.", details:["Charges -30%","2 séries","Mobilité et étirements"],
+            strength:[{name:"Squat léger",sets:"2 x 15 reps"},{name:"Hip thrust léger",sets:"2 x 20 reps"},{name:"Step-down très léger",sets:"2 x 10/jambe"},{name:"Gainage planche",sets:"3 x 45s"},{name:"Mobilité cheville/hanche",sets:"15 min"},{name:"Étirements actifs",sets:"15 min"}] },
+          { type:"trail", day:"Samedi", name:"Petite sortie trail — D+250m", duration:"50 min", desc:"Maintien du lien avec le terrain. Court et tranquille.", details:["D+ : ~250m","Allure très facile","Plaisir"], strength:null },
+          { type:"rest", day:"Dimanche", name:"Repos actif", duration:"—", desc:"Natation, yoga ou vélo. Recharge pour la phase 2 plus intensive.", details:["Yoga recommandé","Massage si courbatures","Mental reposé"], strength:null }
+        ]},
+      { week:5, phase:2, phaseName:"Phase 2 — Développement Intensif Montagne", phaseRange:"Semaines 5-8", recovery:false, title:"Gros D+ hebdomadaire", volume:48,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné côtes longues", duration:"65 min", desc:"4 montées de 4 min à haute intensité. Simulation des grosses bosses de course.", details:["4 x 4 min montée","FC 88-93% max","Descente marche","Écha + retour 20 min"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing récup + strides", duration:"55 min", desc:"Récupération avec strides finaux pour entretenir la vitesse.", details:["45 min zone 1","6 x 80m strides","Terrain plat"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement musculaire — Salle", duration:"65 min", desc:"Force maximale jambes. Dernier gros bloc de force avant phase spécifique.", details:["Charges max","Repos 2-3 min","Spotter recommandé"],
+            strength:[{name:"Squat barre lourd",sets:"5 x 5 reps"},{name:"Hip thrust lourd",sets:"5 x 5 reps"},{name:"Leg press unilatéral",sets:"4 x 10/jambe"},{name:"Step-down excentrique lent",sets:"5 x 10/jambe"},{name:"Gainage rotation",sets:"3 x 30s/côté"},{name:"Mollets debout chargé max",sets:"5 x 12 reps"},{name:"Nordic curl",sets:"4 x 6 reps"},{name:"Extensions lombaires",sets:"3 x 15 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie montagne — D+1000m", duration:"2h30", desc:"Cap du D+1000m. Gérez parfaitement les montées pour ne pas exploser.", details:["D+ : ~1000m","Distance ~18 km","3 gels","Stratégie marche/course"], strength:null }
+        ]},
+      { week:6, phase:2, phaseName:"Phase 2 — Développement Intensif Montagne", phaseRange:"Semaines 5-8", recovery:false, title:"Spécifique terrain course", volume:50,
+        sessions:[
+          { type:"trail", day:"Mardi", name:"Sortie trail race pace — D+800m", duration:"75 min", desc:"Courez à votre allure de course cible. Simulation des conditions réelles.", details:["D+ : ~800m","Allure compétition","Nutrition testée","Équipement course"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing route récupération", duration:"50 min", desc:"Récupération route après l'effort trail du mardi.", details:["Allure : 7:00/km","Zone 1","Terrain plat"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"65 min", desc:"Proprioception et stabilité avancée. Terrain irrégulier exige des chevilles solides.", details:["BOSU avancé","Exercices instables","Cheville renforcée"],
+            strength:[{name:"Squat BOSU unilatéral",sets:"4 x 10/jambe"},{name:"Hip thrust unilatéral lourd",sets:"4 x 10/jambe"},{name:"Équilibre surface instable",sets:"4 x 40s/jambe"},{name:"Fentes sur coussin",sets:"3 x 12/jambe"},{name:"Gainage bird-dog",sets:"3 x 12/côté"},{name:"Mollets step excentrique",sets:"4 x 15/jambe"},{name:"Abduction élastique",sets:"3 x 20/jambe"},{name:"Rowing haltères",sets:"3 x 12 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie montagne — D+1200m", duration:"2h45", desc:"Belle sortie montagne avec D+ conséquent. Travail mental sur les passages difficiles.", details:["D+ : ~1200m","Distance ~20 km","4 gels","Gestion mentale"], strength:null }
+        ]},
+      { week:7, phase:2, phaseName:"Phase 2 — Développement Intensif Montagne", phaseRange:"Semaines 5-8", recovery:false, title:"Pic d'intensité", volume:54,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Séance double qualité", duration:"75 min", desc:"3 x 4 min côtes puis 3 x 1000m plat. Travail complet VMA + spécifique.", details:["3 x 4 min côte intense","3 x 1000m à 5:00/km plat","Récup adaptée","Écha + retour 20 min"], strength:null },
+          { type:"trail", day:"Jeudi", name:"Sortie trail endurance — D+800m", duration:"75 min", desc:"Sortie endurance trail confortable. Courez le maximum de montées.", details:["D+ : ~800m","Zone 2-3","Maximum de portions courues","Hydratation"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"65 min", desc:"Force-endurance maximale. Dernier gros bloc avant affûtage.", details:["Force-endurance","Séries longues","Récupération 90s"],
+            strength:[{name:"Hip thrust charge max",sets:"5 x 5 reps"},{name:"Squat bulgare haltères",sets:"4 x 10/jambe"},{name:"Step-up explosif haut",sets:"4 x 8/jambe"},{name:"Nordic curl",sets:"4 x 6 reps"},{name:"Gainage Pallof",sets:"3 x 15/côté"},{name:"Mollets sautés pliométrie",sets:"3 x 15 reps"},{name:"Squat excentrique 5s",sets:"3 x 10 reps"},{name:"Tirage vertical",sets:"3 x 10 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie montagne — D+1500m", duration:"3h00", desc:"Grande sortie longue avec D+ maximum du programme. Simulation parfaite.", details:["D+ : ~1500m","Distance ~22 km","5 gels","Équipement race J"], strength:null }
+        ]},
+      { week:8, phase:2, phaseName:"Phase 2 — Développement Intensif Montagne", phaseRange:"Semaines 5-8", recovery:true, title:"Semaine de récupération", volume:28,
+        sessions:[
+          { type:"run", day:"Mardi", name:"Footing léger route", duration:"35 min", desc:"Volume très réduit. Le corps récupère des efforts intenses de la phase 2.", details:["Allure : 7:30/km","Route plate","Légèreté"], strength:null },
+          { type:"strength", day:"Jeudi", name:"Renforcement léger — Salle", duration:"45 min", desc:"Maintien musculaire uniquement. Aucune fatigue excessive.", details:["Charges -35%","2 séries max","Mobilité"],
+            strength:[{name:"Squat poids corps",sets:"2 x 15 reps"},{name:"Hip thrust léger",sets:"2 x 20 reps"},{name:"Step-down très léger",sets:"2 x 10/jambe"},{name:"Gainage planche",sets:"3 x 45s"},{name:"Mobilité globale",sets:"15 min"},{name:"Étirements actifs",sets:"15 min"}] },
+          { type:"trail", day:"Samedi", name:"Petite sortie trail — D+300m", duration:"50 min", desc:"Maintien lien terrain. Sortie courte et agréable.", details:["D+ : ~300m","Allure très facile","Profitez"], strength:null },
+          { type:"rest", day:"Dimanche", name:"Repos actif", duration:"—", desc:"Natation, yoga ou vélo doux. Recharge totale.", details:["Massage recommandé","Bain froid","Bilan mi-programme"], strength:null }
+        ]},
+      { week:9, phase:3, phaseName:"Phase 3 — Spécifique Course & Affûtage", phaseRange:"Semaines 9-12", recovery:false, title:"Simulation race conditions", volume:50,
+        sessions:[
+          { type:"trail", day:"Mardi", name:"Sortie trail race pace — D+1000m", duration:"80 min", desc:"Simulation race en conditions réelles. Allure compétition, nutrition J, équipement J.", details:["D+ : ~1000m","Allure race","Nutrition identique course","Équipement race"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing récupération", duration:"50 min", desc:"Récupération active route.", details:["Allure : 7:00/km","Zone 1","Aucune pression"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Force-endurance. Dernière séance de renforcement intense.", details:["Intensité modérée-haute","Quadri et mollets","Gainage long"],
+            strength:[{name:"Squat excentrique 5s",sets:"4 x 8 reps"},{name:"Hip thrust barre",sets:"4 x 10 reps"},{name:"Step-down unilatéral",sets:"4 x 12/jambe"},{name:"Curl ischio",sets:"4 x 12 reps"},{name:"Gainage planche 60s",sets:"4 x 60s"},{name:"Mollets lourds excentrique",sets:"4 x 15/jambe"},{name:"Abduction élastique",sets:"3 x 20/jambe"},{name:"Tirage horizontal",sets:"3 x 10 reps"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie montagne — D+1600m", duration:"3h15", desc:"Sortie longue maximale avec maximum de D+. 5 derniers km à allure course.", details:["D+ : ~1600m","Distance ~22 km","5 gels","Gestion mentale parfaite"], strength:null }
+        ]},
+      { week:10, phase:3, phaseName:"Phase 3 — Spécifique Course & Affûtage", phaseRange:"Semaines 9-12", recovery:false, title:"Pic de préparation", volume:52,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné côtes intensif", duration:"70 min", desc:"5 montées de 4 min à 95% FCmax. Pic de préparation spécifique.", details:["5 x 4 min montée","95% FCmax","Descente marche","Écha + retour 20 min"], strength:null },
+          { type:"trail", day:"Jeudi", name:"Sortie trail technique — D+700m", duration:"70 min", desc:"Travail technique descentes et appuis. Confiance sur le terrain.", details:["D+ : ~700m","Focus descente","Appuis rapides","Regard loin"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Séance équilibrée. Pas de fatigue excessive avant la dernière grande sortie.", details:["Intensité modérée","Étirements prolongés","Récup musculaire"],
+            strength:[{name:"Hip thrust surélevé",sets:"4 x 20 reps"},{name:"Squat gobelet",sets:"4 x 12 reps"},{name:"Step-down léger",sets:"3 x 12/jambe"},{name:"Gainage bird-dog",sets:"3 x 10/côté"},{name:"Mollets step",sets:"4 x 20 reps"},{name:"Abduction élastique",sets:"3 x 20/jambe"},{name:"Fentes statiques étirement",sets:"3 x 30s/jambe"},{name:"Étirements actifs",sets:"15 min"}] },
+          { type:"long", day:"Dimanche", name:"Longue sortie montagne — D+1800m", duration:"3h30", desc:"La plus grande sortie du programme. Simulation race au maximum.", details:["D+ : ~1800m","Distance ~24 km","5 gels","Tout l'équipement race"], strength:null }
+        ]},
+      { week:11, phase:3, phaseName:"Phase 3 — Spécifique Course & Affûtage", phaseRange:"Semaines 9-12", recovery:false, title:"Début affûtage", volume:36,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné qualitatif réduit", duration:"60 min", desc:"Dernière séance intense. Volume réduit de moitié, qualité maximale.", details:["3 x 3 min côte","3 x 800m plat","Sentez la vitesse"], strength:null },
+          { type:"trail", day:"Jeudi", name:"Sortie trail tranquille — D+500m", duration:"60 min", desc:"Corps qui récupère. Sortie confortable en terrain trail.", details:["D+ : ~500m","Allure facile","Visualisation course"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement léger — Salle", duration:"45 min", desc:"Avant-dernière séance. Charges légères uniquement.", details:["Charges -25%","2 séries","Zéro douleur"],
+            strength:[{name:"Squat léger",sets:"3 x 12 reps"},{name:"Hip thrust léger",sets:"3 x 15 reps"},{name:"Step-down très léger",sets:"2 x 10/jambe"},{name:"Gainage planche",sets:"3 x 40s"},{name:"Mollets léger",sets:"3 x 20 reps"},{name:"Mobilité + étirements",sets:"20 min"}] },
+          { type:"long", day:"Dimanche", name:"Sortie trail réduite — D+900m", duration:"2h15", desc:"Sortie longue réduite. Derniers km à allure race.", details:["D+ : ~900m","Distance ~17 km","2 gels","Équipement course"], strength:null }
+        ]},
+      { week:12, phase:3, phaseName:"Phase 3 — Spécifique Course & Affûtage", phaseRange:"Semaines 9-12", recovery:true, title:"Semaine de course — Affûtage final", volume:15,
+        sessions:[
+          { type:"run", day:"Lundi", name:"Footing très léger", duration:"25 min", desc:"Légèreté totale. Juste pour garder les jambes actives.", details:["Allure : 7:30/km","25 min max","Visualisation positive"], strength:null },
+          { type:"trail", day:"Mercredi", name:"Activation trail — D+200m", duration:"30 min", desc:"Courte sortie trail pour rappeler les appuis terrain au corps.", details:["D+ : ~200m","Allure très facile","Sentez le terrain"], strength:null },
+          { type:"run", day:"Vendredi", name:"Footing activation — J-2", duration:"20 min", desc:"Dernière sortie. Très courte. Repos total samedi.", details:["20 min","3 x 20s accélérations","Repos samedi total"], strength:null },
+          { type:"rest", day:"Dimanche", name:"21KM TRAIL — JOUR J 🏔️", duration:"Sub 2h", desc:"Le grand jour ! Votre préparation est parfaite. Gérez les montées, lâchez-vous dans les descentes que vous maîtrisez maintenant.", details:["Montées : marchez si >15%","Descentes : attaque et confiance","Gels : 1 toutes les 40 min","Sub-2h dans vos jambes !"], strength:null }
+        ]}
+    ]
+  },
+
+  // ── 10KM ────────────────────────────────────────────────────────────────────
+  "10k": {
+    id: "10k",
+    name: "10km Sub 40min",
+    heroTitle: "10 KM<br><span>SUB 40MIN</span>",
+    heroSub: "Programme 8 semaines pour passer de 46min à sub-40min. Amélioration de 6 minutes.",
+    heroWatermark: "10KM",
+    heroStats: [
+      { val:"8", lbl:"Semaines" }, { val:"4", lbl:"Séances/sem" },
+      { val:"~4:00", lbl:"Allure cible" }, { val:"46min", lbl:"PB actuel" }
+    ],
+    stats: [
+      { val:"46", unit:"min", lbl:"Chrono actuel 10km" },
+      { val:"Sub 40", unit:"min", lbl:"Objectif" },
+      { val:"6:30", unit:"/km", lbl:"Allure route actuelle" },
+      { val:"4:00", unit:"/km", lbl:"Allure cible 10km" }
+    ],
+    conseils: [
+      { icon:"⚡", bg:"#FFF3CD", title:"La VMA, clé du sub-40min", text:"Pour courir 10km en 40min (4:00/km), vous avez besoin d'une VMA d'au moins 16 km/h. Toutes vos séances de fractionné visent à élever cette VMA. C'est le levier n°1 sur 8 semaines." },
+      { icon:"🏃", bg:"#F5E8EC", title:"L'allure de seuil, votre meilleure amie", text:"L'allure de seuil (où vous pouvez parler mais difficilement) correspond à ~85% FCmax. Pour sub-40min, cette allure se situe vers 4:15-4:20/km. Travaillez-la chaque semaine." },
+      { icon:"💪", bg:"#D8F3DC", title:"Renforcement = économie de course", text:"Sur 10km, chaque seconde d'économie de foulée compte. Les exercices de gainage et de fessiers améliorent directement votre efficacité de course. Ne les négligez pas." },
+      { icon:"😴", bg:"#E3EEF9", title:"Récupération entre les séances intenses", text:"Sur 8 semaines avec 2 séances de qualité par semaine, la récupération est critique. Dormez 8h, mangez bien. La progression vient du repos autant que de l'effort." },
+      { icon:"📏", bg:"#FFF3CD", title:"Stratégie de course 10km", text:"Partez à 4:05/km les 2 premiers km. Stabilisez à 4:00 de km 2 à 8. Accélérez si possible sur les 2 derniers km. Ne partez jamais à 3:50/km, vous exploserez." },
+      { icon:"🔥", bg:"#F5E8EC", title:"Restez affûté, pas épuisé", text:"8 semaines intenses nécessitent une vigilance accrue sur les signes de surmenage : fatigue persistante, irritabilité, baisses de performance. Si c'est le cas, réduisez 2-3 jours." }
+    ],
+    profil: [
+      { lbl:"Objectif", val:"10km Sub 40min" }, { lbl:"Durée programme", val:"8 semaines" },
+      { lbl:"Âge", val:"26 ans" }, { lbl:"PB 10km", val:"46min" },
+      { lbl:"Allure route", val:"6:30 /km" }, { lbl:"Niveau", val:"Avancé" },
+      { lbl:"Séances/semaine", val:"4 séances" }, { lbl:"Renforcement", val:"En salle" }
+    ],
+    profilNote: "Passer de 46min à sub-40min sur 10km représente une amélioration de 13%. C'est ambitieux mais réalisable sur 8 semaines à votre niveau avancé. L'allure cible de 4:00/km nécessite une VMA autour de 16 km/h. Le fractionné sera au cœur de votre préparation.",
+    weeks: [
+      { week:1, phase:1, phaseName:"Phase 1 — Vitesse & Fondation", phaseRange:"Semaines 1-4", recovery:false, title:"Prise de contact avec la vitesse", volume:45,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné court — VMA", duration:"55 min", desc:"Prise de contact avec les allures rapides. 8 x 400m à VMA.", details:["Écha 15 min","8 x 400m à 104% VMA (~2:05)","Récup 90s trot","Retour 15 min"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing endurance fondamentale", duration:"50 min", desc:"Footing tranquille de récupération. Jambes légères.", details:["Allure : 6:50/km","Zone 2","Aucune pression"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Renforcement spécifique 10km. Focus gainage, fessiers et mollets pour l'économie de course.", details:["3 circuits","Repos 60s","Qualité d'exécution"],
+            strength:[{name:"Squat bulgare",sets:"4 x 12/jambe"},{name:"Hip thrust barre",sets:"4 x 15 reps"},{name:"Fentes marchées",sets:"3 x 20 reps"},{name:"Mollets debout machine",sets:"4 x 20 reps"},{name:"Gainage planche",sets:"4 x 45s"},{name:"Pont fessier unilatéral",sets:"3 x 15/jambe"},{name:"Step-up boîte",sets:"3 x 12/jambe"},{name:"Tirage horizontal",sets:"3 x 12 reps"}] },
+          { type:"long", day:"Dimanche", name:"Sortie longue endurance", duration:"1h15", desc:"Sortie longue pour maintenir l'endurance de base. Allure tranquille.", details:["Allure : 6:40/km","Distance ~11 km","Zone 2 confortable"], strength:null }
+        ]},
+      { week:2, phase:1, phaseName:"Phase 1 — Vitesse & Fondation", phaseRange:"Semaines 1-4", recovery:false, title:"Montée en VMA", volume:48,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné 300m — vitesse pure", duration:"55 min", desc:"10 x 300m à 110% VMA. Séance de vitesse pure pour élever la VMA.", details:["Écha 15 min","10 x 300m à 110% VMA","Récup 1min30 trot","Retour 15 min"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing + strides", duration:"55 min", desc:"Footing avec 8 strides de 80m pour travailler la foulée rapide.", details:["45 min à 6:45/km","8 x 80m strides","Récup complète entre strides"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Chaîne postérieure et gainage. Améliore directement l'économie de course.", details:["Supersets","Charges modérées","Qualité d'exécution"],
+            strength:[{name:"Deadlift roumain",sets:"4 x 10 reps"},{name:"Hip thrust unilatéral",sets:"4 x 10/jambe"},{name:"Squat gobelet",sets:"4 x 15 reps"},{name:"Curl ischio couché",sets:"4 x 12 reps"},{name:"Gainage latéral",sets:"3 x 40s/côté"},{name:"Monster walk élastique",sets:"3 x 20 pas/sens"},{name:"Mollets assis chargé",sets:"4 x 25 reps"},{name:"Tirade poulie haute",sets:"3 x 12 reps"}] },
+          { type:"long", day:"Dimanche", name:"Sortie longue endurance", duration:"1h20", desc:"Maintien de l'endurance. Finissez les 5 dernières minutes à 4:30/km.", details:["Allure : 6:40/km","Dernières 5 min : 4:30/km","Distance ~12 km"], strength:null }
+        ]},
+      { week:3, phase:1, phaseName:"Phase 1 — Vitesse & Fondation", phaseRange:"Semaines 1-4", recovery:false, title:"Seuil et vitesse", volume:50,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Tempo seuil — allure 10km intermédiaire", duration:"60 min", desc:"3 x 12 min à allure seuil 4:20/km. Développe la capacité à tenir l'allure cible.", details:["Écha 15 min","3 x 12 min à 4:20/km","Récup 3 min trot","Retour 15 min"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing récupération", duration:"45 min", desc:"Récupération active après le tempo du mardi.", details:["Allure : 7:00/km","Zone 1","Aucune pression"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"65 min", desc:"Pliométrie et explosivité. Améliore la cadence et la puissance de foulée.", details:["Pliométrie incluse","Repos 2 min","Focus genoux et mollets"],
+            strength:[{name:"Squat sauté",sets:"4 x 8 reps"},{name:"Hip thrust barre lourd",sets:"4 x 8 reps"},{name:"Fentes sautées",sets:"4 x 8/jambe"},{name:"Leg press unilatéral",sets:"3 x 12/jambe"},{name:"Gainage dynamique",sets:"3 x 30s"},{name:"Mollets sautés pliométrie",sets:"3 x 15 reps"},{name:"Rowing barre",sets:"3 x 10 reps"},{name:"Extensions lombaires",sets:"3 x 15 reps"}] },
+          { type:"long", day:"Dimanche", name:"Sortie longue + bloc rapide", duration:"1h20", desc:"Sortie longue avec 10 min à allure 10km cible (4:00/km) à mi-parcours.", details:["30 min à 6:40/km","10 min à 4:00/km","Retour 6:40/km","Distance ~12 km"], strength:null }
+        ]},
+      { week:4, phase:1, phaseName:"Phase 1 — Vitesse & Fondation", phaseRange:"Semaines 1-4", recovery:true, title:"Semaine de récupération", volume:30,
+        sessions:[
+          { type:"run", day:"Mardi", name:"Footing léger", duration:"40 min", desc:"Récupération active. Le corps intègre les adaptations des 3 dernières semaines.", details:["Allure : 7:10/km","Zone 1","Aucune pression"], strength:null },
+          { type:"strength", day:"Jeudi", name:"Renforcement léger — Salle", duration:"45 min", desc:"Maintien musculaire. Charges réduites de 30%.", details:["Charges -30%","2 séries","Mobilité"],
+            strength:[{name:"Squat léger",sets:"2 x 15 reps"},{name:"Hip thrust léger",sets:"2 x 15 reps"},{name:"Gainage planche",sets:"3 x 40s"},{name:"Mollets debout",sets:"2 x 20 reps"},{name:"Fentes statiques",sets:"2 x 12/jambe"},{name:"Étirements actifs",sets:"15 min"}] },
+          { type:"run", day:"Samedi", name:"Footing + 4 strides", duration:"45 min", desc:"Footing confortable avec quelques accélérations pour garder les sensations.", details:["40 min à 7:00/km","4 x 80m strides","Récup complète"], strength:null },
+          { type:"rest", day:"Dimanche", name:"Repos actif", duration:"—", desc:"Natation, vélo doux ou yoga. Recharge totale pour la phase 2.", details:["Natation douce","Stretching","Massage si possible"], strength:null }
+        ]},
+      { week:5, phase:2, phaseName:"Phase 2 — Spécifique 10km & Affûtage", phaseRange:"Semaines 5-8", recovery:false, title:"Allure cible intensive", volume:52,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"1000m à allure 10km", duration:"65 min", desc:"6 x 1000m à allure race exacte 4:00/km. La séance la plus spécifique du programme.", details:["Écha 15 min","6 x 1000m à 4:00/km","Récup 2 min trot","Retour 15 min"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing + strides progressifs", duration:"55 min", desc:"Footing avec strides progressifs de plus en plus rapides.", details:["45 min à 6:45/km","6 x 100m strides progressifs","Dernier stride à 90% max"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement musculaire — Salle", duration:"65 min", desc:"Séance de force. Charges lourdes pour améliorer l'économie de course.", details:["Charges lourdes","Repos 2-3 min","Spotter recommandé"],
+            strength:[{name:"Squat barre lourd",sets:"5 x 5 reps"},{name:"Hip thrust barre lourd",sets:"5 x 6 reps"},{name:"Deadlift roumain",sets:"4 x 8 reps"},{name:"Fentes haltères",sets:"4 x 10/jambe"},{name:"Gainage planche rotation",sets:"3 x 30s/côté"},{name:"Mollets debout chargé",sets:"5 x 15 reps"},{name:"Nordic curl",sets:"3 x 6 reps"},{name:"Extensions lombaires",sets:"3 x 15 reps"}] },
+          { type:"long", day:"Dimanche", name:"Sortie longue + bloc tempo", duration:"1h20", desc:"Sortie longue avec 15 min à allure seuil (4:15/km) au milieu.", details:["25 min à 6:40/km","15 min à 4:15/km","Retour 6:40/km","Distance ~12 km"], strength:null }
+        ]},
+      { week:6, phase:2, phaseName:"Phase 2 — Spécifique 10km & Affûtage", phaseRange:"Semaines 5-8", recovery:false, title:"Pic de forme", volume:54,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné mixte — VMA + seuil", duration:"65 min", desc:"5 x 600m à VMA puis 2 x 15 min à seuil. Séance complète de qualité.", details:["5 x 600m à 103% VMA","Puis 2 x 15 min à 4:15/km","Récup adaptée","Écha + retour 20 min"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing récupération", duration:"50 min", desc:"Récupération active légère.", details:["Allure : 7:00/km","Zone 1-2","Terrain plat"], strength:null },
+          { type:"strength", day:"Samedi", name:"Renforcement musculaire — Salle", duration:"60 min", desc:"Séance polyarticulaire complète. Dernière grosse séance de renforcement.", details:["Polyarticulaire","Core puissant","Étirements 15 min"],
+            strength:[{name:"Hip thrust barre max",sets:"5 x 5 reps"},{name:"Squat gobelet profond",sets:"4 x 12 reps"},{name:"Nordic curl",sets:"4 x 6 reps"},{name:"Step-up explosif",sets:"3 x 10/jambe"},{name:"Gainage Pallof",sets:"3 x 15/côté"},{name:"Mollets sautés",sets:"3 x 15 reps"},{name:"Relevé jambes suspendu",sets:"3 x 15 reps"},{name:"Tirage vertical",sets:"3 x 10 reps"}] },
+          { type:"long", day:"Dimanche", name:"Sortie 10km test", duration:"45 min", desc:"10km de test à allure légèrement en-dessous de votre PB. Pas un effort max, juste sentir le rythme.", details:["10km à 4:20/km","Allure confortable","Pas de dépassement max","Juste les sensations"], strength:null }
+        ]},
+      { week:7, phase:2, phaseName:"Phase 2 — Spécifique 10km & Affûtage", phaseRange:"Semaines 5-8", recovery:false, title:"Affûtage — maintien qualité", volume:38,
+        sessions:[
+          { type:"interval", day:"Mardi", name:"Fractionné court qualitatif", duration:"55 min", desc:"6 x 600m à allure 10km. Volume réduit, qualité maximale.", details:["6 x 600m à 4:00/km","Récup 2 min","Sentez la vitesse","Écha + retour 20 min"], strength:null },
+          { type:"run", day:"Jeudi", name:"Footing léger + strides", duration:"45 min", desc:"Corps qui récupère. Quelques strides pour garder les jambes vives.", details:["35 min à 7:00/km","5 x 80m strides","Récup complète"], strength:null },
+          { type:"strength", day:"Vendredi", name:"Renforcement léger — Salle", duration:"40 min", desc:"Dernière séance de renforcement. Charges réduites, maintien uniquement.", details:["Charges -20%","2 séries","Aucune douleur musculaire"],
+            strength:[{name:"Squat poids corps",sets:"3 x 15 reps"},{name:"Hip thrust léger",sets:"3 x 15 reps"},{name:"Gainage planche",sets:"3 x 45s"},{name:"Mollets léger",sets:"3 x 20 reps"},{name:"Fentes statiques",sets:"2 x 10/jambe"},{name:"Mobilité + étirements",sets:"15 min"}] },
+          { type:"run", day:"Dimanche", name:"Footing détendu", duration:"40 min", desc:"Sortie tranquille. Les jambes se rechargent pour le jour J.", details:["Allure : 7:00/km","Aucune pression","Visualisez la course"], strength:null }
+        ]},
+      { week:8, phase:2, phaseName:"Phase 2 — Spécifique 10km & Affûtage", phaseRange:"Semaines 5-8", recovery:true, title:"Semaine de course — Affûtage final", volume:18,
+        sessions:[
+          { type:"run", day:"Lundi", name:"Footing très léger", duration:"25 min", desc:"Légèreté absolue. Juste garder les jambes actives.", details:["Allure : 7:30/km","25 min","Visualisation positive"], strength:null },
+          { type:"interval", day:"Mercredi", name:"Activation — 10 min allure course", duration:"30 min", desc:"Courte activation à allure race pour rappeler au corps son objectif.", details:["Écha 10 min","10 min à 4:00/km","Retour 10 min","Sentez la fluidité"], strength:null },
+          { type:"run", day:"Vendredi", name:"Footing d'activation — J-2", duration:"20 min", desc:"Dernière sortie. Très courte. Repos total samedi.", details:["20 min","4 x 30s accélérations","Repos samedi"], strength:null },
+          { type:"rest", day:"Dimanche", name:"10KM — JOUR J ⚡", duration:"~39min", desc:"C'est le grand jour ! Partez à 4:05/km, stabilisez à 4:00. Donnez tout sur les 2 derniers km. Sub-40min dans vos jambes !", details:["Km 1-2 : 4:05/km","Km 2-8 : 4:00/km","Km 8-10 : donnez tout !","Sub-40min, vous le méritez !"], strength:null }
+        ]}
+    ]
+  }
+};
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let currentProg = "marathon";
+let activeTabBtn = null;
+
+function switchProg(id, btn) {
+  currentProg = id;
+  document.querySelectorAll(".prog-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  const prog = PROGRAMS[id];
+
+  // Hero
+  document.getElementById("hero-title").innerHTML = prog.heroTitle;
+  document.getElementById("hero-sub").textContent = prog.heroSub;
+  document.getElementById("hero-watermark").textContent = prog.heroWatermark;
+
+  // Hero stats
+  const statsEl = document.getElementById("hero-stats");
+  statsEl.innerHTML = prog.heroStats.map((s, i) =>
+    (i > 0 ? "<div class=\"hero-divider\"></div>" : "") +
+    `<div class="hero-stat"><span class="hero-stat-val">${s.val}</span><span class="hero-stat-lbl">${s.lbl}</span></div>`
+  ).join("");
+
+  // Reset to programme tab
+  document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+  document.getElementById("tab-programme").classList.add("active");
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.querySelector(".tab-btn").classList.add("active");
+
+  renderAll();
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("tab-" + name).classList.add("active");
+  btn.classList.add("active");
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+
+var NUTRITION = {
+  marathon: {
+    alert: "En tant que coureur experimente, ce programme integre des seances d\'entrainement nutritionnel progressif pour simuler vos conditions de course sub-4h.",
+    training: [
+      {weeks:"S1-S2", icon:"&#x1F9EA;", title:"Test gel sur longue sortie", desc:"Prenez 1 gel isotonique a 45 min sur chaque longue sortie. Identifiez votre gel favori et verifiez votre tolerance digestive.", tags:["1 gel par sortie longue","A 45 min d effort","200ml eau"]},
+      {weeks:"S3-S4", icon:"&#x1F4A7;", title:"Introduction electrolytes", desc:"Ajoutez des electrolytes dans votre flasque sur les sorties de plus de 60 min. Cible : 500-700mg sodium par heure.", tags:["Electrolytes en flasque","500-700mg sodium/h","Testez differentes marques"]},
+      {weeks:"S5-S6", icon:"&#x23F1;", title:"Gel toutes les 45 min", desc:"Protocole strict : 1 gel toutes les 45 min sur les sorties de plus de 90 min. Entrainement de votre systeme digestif et de votre mental.", tags:["1 gel toutes les 45 min","Sorties 90 min et plus","Notez vos sensations"]},
+      {weeks:"S7-S8", icon:"&#x1F4CA;", title:"Simulation nutrition race 25km", desc:"Sur la sortie de 25km : 3 gels comme en course. Meme marque, meme timing, meme quantite d eau. Test grandeur nature.", tags:["3 gels protocole race","Timing identique course","150-200ml eau par gel"]},
+      {weeks:"S9-S10", icon:"&#x26A1;", title:"Cafeine strategique km 30", desc:"Testez 1 gel cafeine entre km 25 et 30 sur votre sortie longue. La cafeine booste les performances en fin de marathon.", tags:["1 gel cafeine km 25-30","50-75mg cafeine","Testez en semaine avant"]},
+      {weeks:"S11-S12", icon:"&#x1F3C1;", title:"Protocole race finalise", desc:"Plan arrete : 1 gel toutes les 45 min, electrolytes continus, 1 gel cafeine a mi-course. Ne changez plus rien d ici le jour J.", tags:["Plan nutrition fige","Plus aucun test","Appliquez exactement"]}
+    ],
+    timeline: [
+      {time:"J-7 a J-3", title:"Alimentation normale + hydratation", desc:"Mangez equilibre, augmentez legerement les glucides. Hydratez-vous bien : urines claires tout au long de la journee."},
+      {time:"J-3", title:"Debut charge glucidique", desc:"Glucides a 70% de chaque assiette. Riz blanc, pates, pain, bananes. Reduisez fibres et graisses pour proteger la digestion."},
+      {time:"J-2", title:"Charge glucidique complete", desc:"8-10g glucides par kg de poids. Pour 70kg : 560-700g de glucides repartis en 5-6 repas. Evitez absolument les aliments nouveaux."},
+      {time:"Veille soir", title:"Pates sauce simple - 19h max", desc:"Pates al dente (200g secs), sauce tomate simple, poulet ou oeuf. Pas de sauce grasse, pas de crudites, pas d alcool."},
+      {time:"Matin J - 3h avant", title:"Petit-dejeuner classique", desc:"Pain blanc + confiture + banane mure + cafe si habitue. Pas de fibres ni laitages. 500ml eau + electrolytes."},
+      {time:"30 min avant", title:"Gel de pre-activation", desc:"1 gel isotonique 30 min avant le depart + 200ml eau. Active les reserves de glycogene musculaire."},
+      {time:"Pendant", title:"1 gel toutes les 45 min", desc:"Km 8, 16, 24, 32, 38 = 5 gels minimum. 1 gel cafeine au km 30. 150-200ml eau a chaque ravitaillement."},
+      {time:"Apres course", title:"Fenetres de recuperation", desc:"Dans 30 min : banane + 500ml lait chocolat. Dans 2h : repas complet proteines + glucides. 1.5L eau dans les 3h."}
+    ]
+  },
+  marathon_trail: {
+    alert: "Le trail modere avec D+ exige une strategie specifique : effort plus long, intensite variable, ravitaillements espaces. Votre estomac doit apprendre a travailler en montee.",
+    training: [
+      {weeks:"S1-S2", icon:"&#x26F0;", title:"Test gel en montee", desc:"Prenez votre gel juste avant une montee difficile. Verifiez votre tolerance digestive specifiquement en effort vertical intense.", tags:["Gel avant montee","100-150ml eau seulement","Notez l inconfort eventuel"]},
+      {weeks:"S3-S4", icon:"&#x1F4A7;", title:"Electrolytes trail : sodium prioritaire", desc:"En trail, la transpiration est plus importante. Visez 600-800mg sodium par heure dans votre sac d hydratation.", tags:["600-800mg sodium/h","Sac hydratation 1-1.5L","Buvez toutes les 15-20 min"]},
+      {weeks:"S5-S6", icon:"&#x1F9C2;", title:"Aliments solides en trail", desc:"Testez barres de cereales, dattes, pain d epices sur les sorties de plus de 2h. Les solides sont essentiels sur trail long.", tags:["Barres de cereales","Dattes ou figues seches","Pain d epices en morceaux"]},
+      {weeks:"S7-S8", icon:"&#x1F3CB;", title:"Manger en montee, pas en descente", desc:"Planifiez vos prises nutritionnelles sur les portions de marche en montee. Difficile et risque de s alimenter en descente technique.", tags:["Nutrition en montee uniquement","Buvez en marche","Evitez pendant descentes"]},
+      {weeks:"S9-S10", icon:"&#x1F4CA;", title:"Simulation ravitaillement course", desc:"Sur votre grande sortie, simulez les ravitaillements avec exactement ce qui sera disponible en course. Combinez gels + solides + electrolytes.", tags:["Memes produits qu en course","Gels + solides + electrolytes","Chronometrez vos prises"]},
+      {weeks:"S11-S12", icon:"&#x1F3C1;", title:"Plan trail finalise", desc:"1 gel toutes les 40 min + 1 aliment solide toutes les 60 min + electrolytes continus + cafeine au km 28-30. Ne changez rien.", tags:["1 gel toutes les 40 min","Solide toutes les 60 min","Cafeine au km 28-30"]}
+    ],
+    timeline: [
+      {time:"J-7 a J-3", title:"Glucides et bonnes graisses", desc:"Le trail sollicite le metabolisme lipidique. Incluez bonnes graisses (avocat, noix, huile olive) en plus des glucides."},
+      {time:"J-3", title:"Charge glucidique progressive", desc:"Riz, quinoa, patate douce, bananes. Evitez legumineuses et crudites en grandes quantites pour proteger la digestion."},
+      {time:"J-2", title:"Repas simples et connus", desc:"Poulet riz sauce simple, pates beurre parmesan. Pas d epices, pas d alcool, pas d aliment non teste."},
+      {time:"Veille soir", title:"Pates ou riz + proteine simple", desc:"200g pates al dente + poulet grill ou saumon + filet d huile olive. Repas leger, digestion rapide. Mangez a 19h."},
+      {time:"Matin J - 2-3h avant", title:"Petit-dej trail", desc:"Flocons d avoine + banane + miel + cafe. Pas de pain complet. 600ml eau + electrolytes. Stop alimentation 2h avant."},
+      {time:"30 min avant", title:"Activation pre-course", desc:"1 gel cafeine + 200ml eau. Si depart matinal : complement de sucres rapides (pate de fruit, barre energetique legere)."},
+      {time:"Pendant", title:"Strategie trail modere 4h", desc:"1 gel toutes les 40 min + 1 aliment solide toutes les 60 min. Aux ravitaillements : fruits, bouillon sale. 500ml eau/h."},
+      {time:"Apres course", title:"Recuperation trail", desc:"Bouillon sale immediatement. Dans 30 min : sandwich ou lait chocolat. Massage et bain froid si disponible."}
+    ]
+  },
+  semi: {
+    alert: "Le 21km trail montagne dure environ 2h a votre objectif. L intensite elevee reduit le flux sanguin intestinal. Votre strategie doit etre simple, testee et fiable.",
+    training: [
+      {weeks:"S1-S2", icon:"&#x1F9EA;", title:"Test gel en montee raide", desc:"Sur vos premieres sorties montagne, prenez 1 gel avant un passage difficile. Identifiez votre tolerance digestive en effort intense.", tags:["1 gel avant passage difficile","100-150ml eau seulement","Notez l inconfort eventuel"]},
+      {weeks:"S3-S4", icon:"&#x1F4A7;", title:"Electrolytes en altitude", desc:"En altitude, la transpiration contient plus de sodium. Visez 600mg sodium par heure. Comprimes ou poudre dans votre flasque.", tags:["Comprimes ou poudre electrolytes","600mg sodium/h","Flasque 500ml minimum"]},
+      {weeks:"S5-S6", icon:"&#x23F0;", title:"Prise toutes les 40 min", desc:"Sur les sorties de plus de 90 min : gel ou barre toutes les 40 min. A votre intensite en montagne, le glycogene s epuise vite.", tags:["Prise toutes les 40 min","Gel OU barre energetique","Ne jamais attendre la faim"]},
+      {weeks:"S7-S8", icon:"&#x26A1;", title:"Test gel cafeine a 1h15", desc:"Testez 1 gel cafeine (50mg) a 1h15 d effort sur votre grande sortie. Peut booster les 30-40 dernieres minutes en montagne.", tags:["1 gel cafeine a 1h15 d effort","50-75mg cafeine","Testez a l entrainement avant"]},
+      {weeks:"S9-S10", icon:"&#x1F4CA;", title:"Simulation exacte course", desc:"Appliquez le protocole prevu en course. Memes produits, meme timing, meme quantite d eau. Validez et ajustez si besoin.", tags:["Protocole identique course","2 gels + electrolytes + cafeine","Notez ce qui fonctionne"]},
+      {weeks:"S11-S12", icon:"&#x1F3C1;", title:"Plan nutrition fige", desc:"Plan definitif : 1 gel a 40 min + 1 gel cafeine a 1h15 + electrolytes continus. Simple, efficace, teste. Ne changez rien.", tags:["Gel a 40 min d effort","Gel cafeine a 1h15","Electrolytes en continu"]}
+    ],
+    timeline: [
+      {time:"J-7 a J-3", title:"Alimentation normale et variee", desc:"Pas de changement. Mangez equilibre : proteines, glucides, bonnes graisses. Hydratation reguliere. Evitez restaurants et aliments inconnus."},
+      {time:"J-3", title:"Charge glucidique legere", desc:"Glucides a 60-65% de chaque repas. Riz, pates, pain de mie. Reduisez les fibres pour proteger la digestion."},
+      {time:"J-2", title:"Digestion facile prioritaire", desc:"Pates blanches + poulet ou thon. Pas de salades crues, lentilles, haricots. Votre tube digestif doit etre tranquille."},
+      {time:"Veille soir", title:"Pates simples - 19h max", desc:"Pates sauce tomate + poulet grill. Dessert : riz au lait ou yaourt + miel. Eau plate + petite pincee de sel. Dormez tot."},
+      {time:"Matin J - 2-3h avant", title:"Petit-dej leger", desc:"Pain blanc + confiture + banane + cafe si habitue. Pas de lait, pas de fibres. 400ml eau + electrolytes."},
+      {time:"20 min avant", title:"Activation pre-depart", desc:"1 gel isotonique + 150ml eau. Ou 3-4 dattes + eau. Active le glycogene sans surcharger l estomac."},
+      {time:"Pendant", title:"Strategie 21km trail 2h", desc:"A 40 min : 1 gel isotonique + eau. A 1h15 : 1 gel cafeine + eau. Electrolytes en continu. Simple et efficace."},
+      {time:"Apres course", title:"Recuperation immediate", desc:"Bouillon sale si disponible. Dans 20 min : banane + eau. Dans 1h : repas complet proteines + glucides."}
+    ]
+  },
+  k10: {
+    alert: "Le 10km dure 40 min a votre objectif. La nutrition se joue surtout AVANT la course. Pendant l effort, l apport energetique est inutile voire contre-productif.",
+    training: [
+      {weeks:"S1-S2", icon:"&#x1F4A7;", title:"Hydratation optimale avant seances", desc:"La deshydratation peut couter 3-5% de performance sur 40 min. Buvez 500ml d eau dans les 2h avant chaque seance de qualite.", tags:["500ml eau 2h avant seance","Urines claires = bien hydrate","Pas de boisson pendant l effort"]},
+      {weeks:"S3-S4", icon:"&#x2615;", title:"Cafeine pre-fractionne", desc:"Testez 1 cafe ou 1 gel cafeine 45 min avant vos seances de fractionne. La cafeine ameliore la performance sur 10km.", tags:["Cafe ou gel cafeine 45 min avant","Testez a l entrainement d abord","Evitez si sensible au cafe"]},
+      {weeks:"S5-S6", icon:"&#x1F35E;", title:"Repas pre-seance optimise", desc:"3h avant chaque seance de qualite : 80g riz ou pates + proteine legere. Testez cette routine pour l appliquer avant la course.", tags:["80g riz ou pates 3h avant","Proteine legere (oeuf, poulet)","Pas de graisses ni fibres"]},
+      {weeks:"S7", icon:"&#x1F9EA;", title:"Simulation protocole race complet", desc:"Appliquez exactement le protocole course avant votre fractionne du mardi. Meme repas, meme cafe, meme timing. Validez.", tags:["Protocole race complet","Meme horaire que jour J","Valider ou ajuster"]},
+      {weeks:"S8", icon:"&#x1F3C1;", title:"Plan race fige", desc:"Votre protocole est valide. Appliquez-le exactement le jour J. Simple, connu, efficace. La confiance fait partie de la performance.", tags:["Protocole valide et connu","Rien de nouveau le jour J","Confiance = performance"]}
+    ],
+    timeline: [
+      {time:"J-7 a J-3", title:"Alimentation normale", desc:"Le 10km ne necessite pas de charge glucidique importante. Mangez normalement et equilibre. Hydratez-vous bien."},
+      {time:"J-3", title:"Supplement glucides leger", desc:"Ajoutez une portion de riz ou pates a J-3 et J-2. Pas de charge complete necessaire pour 40 min de course."},
+      {time:"J-2", title:"Repas simples et connus", desc:"Repas que vous maitrisez bien. Pas de restaurant, pas de nouveaute. Dormez bien : c est la cle de la performance sur 10km."},
+      {time:"Veille soir", title:"Repas classique", desc:"Pates ou riz + poulet ou poisson blanc. Sauce simple. Pas d alcool, pas de sauce lourde. Repas a 19h maximum."},
+      {time:"Matin J - 2-3h avant", title:"Petit-dej leger et connu", desc:"Pain blanc + confiture + banane + cafe. Pas de lait, pas de fibres. 400ml eau. Si depart tot : mangez 2h avant."},
+      {time:"45 min avant", title:"Cafeine et activation", desc:"1 cafe ou 1 gel cafeine 45 min avant le depart. C est votre booster principal sur 10km. + 200ml eau."},
+      {time:"Pendant", title:"Rien pendant la course", desc:"40 min d effort : inutile de prendre un gel. Cela ralentit et peut causer des problemes digestifs. Eau uniquement si chaleur forte."},
+      {time:"Apres course", title:"Recuperation simple", desc:"Dans 20 min : banane + eau. Dans 1h : repas complet proteines + glucides. Felicitations pour votre sub-40min !"}
+    ]
+  }
+};
+
+function renderNutrition() {
+  var progKey = currentProg === "10k" ? "k10" : currentProg;
+  var n = NUTRITION[progKey];
+  var el = document.getElementById("nutrition-content");
+  if (!n || !el) return;
+
+  var cards = n.training.map(function(t) {
+    var tags = t.tags.map(function(tag) { return '<span class="nutri-tag">' + tag + '</span>'; }).join("");
+    return '<div class="nutri-card">' +
+      '<div class="nutri-card-header">' +
+        '<div class="nutri-card-icon">' + t.icon + '</div>' +
+        '<span class="nutri-card-title">' + t.weeks + ' — ' + t.title + '</span>' +
+        '<span class="nutri-card-badge">Entraînement</span>' +
+      '</div>' +
+      '<div class="nutri-card-body">' +
+        '<div class="nutri-card-desc">' + t.desc + '</div>' +
+        '<div class="nutri-tags">' + tags + '</div>' +
+      '</div></div>';
+  }).join("");
+
+  var tl = n.timeline.map(function(r) {
+    return '<div class="nutri-timeline-item">' +
+      '<div class="nutri-timeline-time">' + r.time + '</div>' +
+      '<div class="nutri-timeline-content">' +
+        '<div class="nutri-timeline-title">' + r.title + '</div>' +
+        '<div class="nutri-timeline-desc">' + r.desc + '</div>' +
+      '</div></div>';
+  }).join("");
+
+  el.innerHTML =
+    '<div class="nutri-alert"><strong>&#x1F4A1; Profil nutritionnel :</strong> ' + n.alert + '</div>' +
+    '<div class="nutri-section">' +
+      '<div class="nutri-section-title">&#x1F3CB; Entraînements Nutritionnels</div>' +
+      '<div class="nutri-grid">' + cards + '</div>' +
+    '</div>' +
+    '<div class="nutri-section">' +
+      '<div class="nutri-section-title">&#x1F4C5; Protocole Course — De J-7 au Jour J</div>' +
+      '<div style="background:white;border:1.5px solid var(--gray-light);border-radius:14px;padding:1.25rem;">' +
+        '<div class="nutri-timeline">' + tl + '</div>' +
+      '</div>' +
+    '</div>';
+}
+
+function renderAll() {
+  renderWeeks();
+  renderStats();
+  renderConseils();
+  renderProfil();
+  renderNutrition();
+  document.getElementById("detail-panel").classList.remove("visible");
+  document.getElementById("detail-panel").innerHTML = "";
+}
+
+function renderWeeks() {
+  const prog = PROGRAMS[currentProg];
+  const grid = document.getElementById("weeks-grid");
+  grid.innerHTML = "";
+  document.getElementById("prog-intro").textContent = `Cliquez sur une semaine pour voir le détail des séances. Programme de ${prog.weeks.length} semaines.`;
+
+  let currentPhase = 0;
+  prog.weeks.forEach(week => {
+    if (week.phase !== currentPhase) {
+      currentPhase = week.phase;
+      const label = document.createElement("div");
+      label.className = "phase-label";
+      label.innerHTML = week.phaseName + `<span>${week.phaseRange}</span>`;
+      grid.appendChild(label);
+    }
+
+    const card = document.createElement("div");
+    card.className = "week-card" + (week.recovery ? " recovery-week" : "");
+    card.onclick = () => toggleDetail(week, card);
+
+    const icons = { run:"🏃", interval:"⚡", strength:"💪", long:"🛣️", trail:"⛰️", rest:"😴" };
+    const dotCls = { run:"dot-run", interval:"dot-interval", strength:"dot-strength", long:"dot-long", trail:"dot-trail", rest:"dot-rest" };
+    const dots = week.sessions.map(s =>
+      `<div class="session-dot ${dotCls[s.type] || 'dot-run'}">${icons[s.type] || '·'}</div>`
+    ).join("");
+
+    card.innerHTML = `
+      <div class="week-num">SEMAINE ${week.week}</div>
+      <div class="week-title-card">${week.title}</div>
+      <div class="week-sessions">${dots}</div>
+      <div class="week-volume">${week.volume} km</div>
+      ${week.recovery ? '<div class="recovery-badge">Récupération</div>' : ''}`;
+    grid.appendChild(card);
+  });
+}
+
+function toggleDetail(week, card) {
+  const panel = document.getElementById("detail-panel");
+  document.querySelectorAll(".week-card").forEach(c => c.classList.remove("selected"));
+  if (panel.classList.contains("visible") && panel.dataset.week === String(week.week) && panel.dataset.prog === currentProg) {
+    panel.classList.remove("visible"); return;
+  }
+  card.classList.add("selected");
+  panel.dataset.week = week.week;
+  panel.dataset.prog = currentProg;
+
+  const typeLabel = { run:"Footing", interval:"Fractionné", strength:"Renforcement", long:"Longue sortie", trail:"Trail", rest:"Repos actif" };
+  const typeCls = { run:"type-run", interval:"type-interval", strength:"type-strength", long:"type-long", trail:"type-trail", rest:"type-rest" };
+
+  const sessionsHTML = week.sessions.map(s => {
+    let strengthHTML = "";
+    if (s.strength && s.strength.length) {
+      const exItems = s.strength.map(ex => `
+        <div class="exercise-item">
+          <span class="exercise-name">${ex.name}</span>
+          <span class="exercise-sets">${ex.sets}</span>
+        </div>`).join("");
+      strengthHTML = `<div class="strength-block"><div class="strength-block-title">🏋️ Exercices — En salle</div><div class="exercises-grid">${exItems}</div></div>`;
+    }
+    const detailTags = (s.details || []).map(d => `<span class="session-detail-tag">${d}</span>`).join("");
+    return `
+      <div class="session-card">
+        <div class="session-header">
+          <span class="session-type-badge ${typeCls[s.type] || 'type-run'}">${typeLabel[s.type] || s.type}</span>
+          <span class="session-day">${s.day}</span>
+          <span class="session-name">${s.name}</span>
+          <span class="session-duration">${s.duration}</span>
+        </div>
+        <div class="session-body">
+          <div class="session-desc">${s.desc}</div>
+          <div class="session-details">${detailTags}</div>
+          ${strengthHTML}
+        </div>
+      </div>`;
+  }).join("");
+
+  panel.innerHTML = `
+    <div class="detail-header">
+      <div>
+        <div class="detail-week-num">SEMAINE ${week.week} · ${week.volume} KM</div>
+        <div class="detail-title">${week.title}</div>
+      </div>
+      <button class="detail-close" onclick="closeDetail()">✕</button>
+    </div>
+    <div class="sessions-list">${sessionsHTML}</div>`;
+
+  panel.classList.add("visible");
+  panel.scrollIntoView({ behavior:"smooth", block:"start" });
+}
+
+function closeDetail() {
+  document.getElementById("detail-panel").classList.remove("visible");
+  document.querySelectorAll(".week-card").forEach(c => c.classList.remove("selected"));
+}
+
+function renderStats() {
+  const prog = PROGRAMS[currentProg];
+  const grid = document.getElementById("stats-grid");
+  grid.innerHTML = prog.stats.map(s =>
+    `<div class="stat-big"><div class="stat-big-val">${s.val}<span class="stat-big-unit">${s.unit}</span></div><div class="stat-big-lbl">${s.lbl}</div></div>`
+  ).join("");
+
+  const maxVol = Math.max(...prog.weeks.map(w => w.volume));
+  const chart = document.getElementById("volume-chart");
+  chart.innerHTML = "";
+  prog.weeks.forEach(week => {
+    const pct = Math.round((week.volume / maxVol) * 100);
+    const wrap = document.createElement("div");
+    wrap.className = "chart-bar-wrap";
+    wrap.innerHTML = `
+      <div class="chart-bar-km">${week.volume}</div>
+      <div class="chart-bar${week.recovery ? ' recovery' : ''}" style="height:${pct}%"></div>
+      <div class="chart-bar-lbl">S${week.week}</div>`;
+    chart.appendChild(wrap);
+  });
+}
+
+function renderConseils() {
+  const prog = PROGRAMS[currentProg];
+  document.getElementById("conseils-content").innerHTML = prog.conseils.map(c =>
+    `<div class="tip-card">
+      <div class="tip-icon" style="background:${c.bg};">${c.icon}</div>
+      <div><div class="tip-title">${c.title}</div><div class="tip-text">${c.text}</div></div>
+    </div>`
+  ).join("");
+}
+
+function renderProfil() {
+  const prog = PROGRAMS[currentProg];
+  document.getElementById("profil-content").innerHTML = `
+    <div class="profil-card">${prog.profil.map(p =>
+      `<div class="profil-field"><span class="profil-label">${p.lbl}</span><span class="profil-value">${p.val}</span></div>`
+    ).join('')}</div>
+    <div class="tip-card">
+      <div class="tip-icon" style="background:#F5E8EC;">📊</div>
+      <div><div class="tip-title">Analyse de votre profil</div><div class="tip-text">${prog.profilNote}</div></div>
+    </div>`;
+}
+
+// Init
+renderAll();
+</script>
+</body>
+</html>
